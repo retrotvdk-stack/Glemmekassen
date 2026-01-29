@@ -1447,15 +1447,30 @@
 
         videoElement.onplay = () => {
           // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
+          // Increased delay for iOS in-app browsers (TikTok, Instagram, etc.)
           if (!muted && volume > 0) {
-            setTimeout(() => { videoElement.muted = false; }, 100);
+            setTimeout(() => {
+              videoElement.muted = false;
+              // Force play again after unmuting to prevent iOS from pausing
+              setTimeout(() => {
+                videoElement.play().catch(() => { });
+              }, 100);
+            }, 2000); // Increased from 1000ms to 2000ms for better iOS compatibility
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
 
+        // iOS in-app browser fix: Retry play if video gets paused unexpectedly
         videoElement.onpause = () => {
+          if (!videoElement.ended) {
+            setTimeout(() => {
+              videoElement.play().catch(() => { });
+            }, 100);
+          }
           if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
         };
+
+
 
         videoElement.onended = () => {
           if (onStateChangeCb) onStateChangeCb({ data: 0 }); // 0 = ENDED
@@ -1559,8 +1574,15 @@
               dmInternalState = 1; // PLAYING
 
               // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
+              // Increased delay for iOS in-app browsers (TikTok, Instagram, etc.)
               if (!muted && volume > 0) {
-                setTimeout(() => { dmPlayer.setMuted(false); }, 100);
+                setTimeout(() => {
+                  dmPlayer.setMuted(false);
+                  // Force play again after unmuting to prevent iOS from pausing
+                  setTimeout(() => {
+                    dmPlayer.play().catch(() => { });
+                  }, 100);
+                }, 2000); // Increased from 1000ms to 2000ms for better iOS compatibility
               }
 
               // FORCE SEEK if we are resuming (live simulation)
@@ -1733,8 +1755,14 @@
                     // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
                     if (!muted && volume > 0) {
                       setTimeout(() => {
-                        if (ytPlayer) ytPlayer.unMute();
-                      }, 100);
+                        if (ytPlayer) {
+                          ytPlayer.unMute();
+                          // Force play again after unmuting to prevent iOS from pausing
+                          setTimeout(() => {
+                            if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+                          }, 100);
+                        }
+                      }, 2000); // Increased from 100ms to 2000ms for better iOS compatibility
                     }
                   }
                   if (ctx.onStateChangeCb) ctx.onStateChangeCb(e);
