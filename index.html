@@ -8,6 +8,9 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Retro Cartoon TV</title>
 
+  <!-- 100% privacy-first analytics -->
+  <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -1471,8 +1474,14 @@
 
     // iOS Detection
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const isInAppBrowser = navigator.userAgent.includes('Instagram') || navigator.userAgent.includes('FBAN') || navigator.userAgent.includes('FBAV') || window.navigator.standalone === false;
+    const isInAppBrowser = (navigator.userAgent.includes('Instagram') ||
+      navigator.userAgent.includes('FBAN') ||
+      navigator.userAgent.includes('FBAV') ||
+      navigator.userAgent.includes('Line/')) && isIOS; // Only flag in-app if also iOS
     const shouldStayMuted = isIOS || isInAppBrowser;
+
+    // Debug log for testing
+    console.log('Platform detection:', { isIOS, isInAppBrowser, shouldStayMuted, userAgent: navigator.userAgent });
 
     function createPlayer({ videoId, startAt = 0, loadId = currentLoadId, onReadyCb, onStateChangeCb, onEnded, onError }) {
       // Detect platform
@@ -2888,7 +2897,13 @@
             }
 
             e.target.setVolume(volume);
-            if (muted) e.target.mute();
+
+            // Desktop: Unmute immediately after player is ready
+            if (!shouldStayMuted && !muted && volume > 0) {
+              e.target.unMute();
+            } else if (muted) {
+              e.target.mute();
+            }
 
             // 1. Save Duration (DM duration might be 0 immediately after load)
             let dur = e.target.getDuration();
