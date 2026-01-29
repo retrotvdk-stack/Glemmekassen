@@ -767,9 +767,9 @@
       <div class="monitor-encasement">
         <div class="screen-bezel">
           <div class="screen">
-            <video id="staticVideo" loop muted playsinline
+            <video id="staticVideo" loop muted playsinline webkit-playsinline
               src="https://cdn.pixabay.com/video/2018/04/20/15708-266043570_large.mp4"></video>
-            <video id="powerOffVideo" muted playsinline
+            <video id="powerOffVideo" muted playsinline webkit-playsinline
               src="https://cdn.pixabay.com/video/2019/09/25/27228-362518551_large.mp4"></video>
             <div id="player"></div>
             <div class="label" id="label">TV slukket</div>
@@ -1070,6 +1070,18 @@
     const clickSound = document.getElementById("clickSound");
     const staticSound = document.getElementById("staticSound");
     const powerOffSound = document.getElementById("powerOffSound");
+
+    // Ensure iOS playsinline attributes are set (critical for iPad)
+    if (staticVideo) {
+      staticVideo.setAttribute('playsinline', 'true');
+      staticVideo.setAttribute('webkit-playsinline', 'true');
+      staticVideo.playsInline = true;
+    }
+    if (powerOffVideo) {
+      powerOffVideo.setAttribute('playsinline', 'true');
+      powerOffVideo.setAttribute('webkit-playsinline', 'true');
+      powerOffVideo.playsInline = true;
+    }
 
     if (window.location.protocol === 'file:') {
       console.warn("App running via file:// protocol. YouTube videos may fail with Error 153.");
@@ -2733,6 +2745,16 @@
           loadId: loadId,
           onReadyCb: (e) => {
             if (loadId !== currentLoadId) return; // Ignore stale load callbacks
+
+            // iOS-specific: Force playback after static (autoplay may fail on iOS)
+            if (e.target.playVideo) {
+              try {
+                e.target.playVideo();
+              } catch (err) {
+                console.log('Force play error:', err);
+              }
+            }
+
             e.target.setVolume(volume);
             if (muted) e.target.mute();
 
