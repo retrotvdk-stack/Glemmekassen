@@ -737,7 +737,74 @@
       border: 1px solid #400000;
       box-shadow: 0 0 2px #000;
     }
+
+
+    /* ========================================
+       RESPONSIVE MOBILE STYLING
+       ======================================== */
+
+    /* iPad and smaller tablets (landscape) */
+    @media screen and (max-width: 1024px) {
+      body {
+        padding: 10px;
+      }
+
+      .tv {
+        transform: scale(0.85);
+        transform-origin: center;
+      }
+    }
+
+    /* iPad (portrait) and large phones (landscape) */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 5px;
+        align-items: flex-start;
+        padding-top: 20px;
+      }
+
+      .tv {
+        transform: scale(0.65);
+        transform-origin: top center;
+      }
+
+      #tv.expanded {
+        transform: scale(0.75) translateX(-40px);
+      }
+    }
+
+    /* iPhone and smaller devices */
+    @media screen and (max-width: 430px) {
+      body {
+        padding: 2px;
+        align-items: flex-start;
+        padding-top: 10px;
+      }
+
+      .tv {
+        transform: scale(0.48);
+        transform-origin: top center;
+        margin-top: -20px;
+      }
+
+      #tv.expanded {
+        transform: scale(0.55) translateX(-20px);
+      }
+    }
+
+    /* Very small phones (iPhone SE, etc.) */
+    @media screen and (max-width: 375px) {
+      .tv {
+        transform: scale(0.43);
+        margin-top: -30px;
+      }
+
+      #tv.expanded {
+        transform: scale(0.50) translateX(-15px);
+      }
+    }
   </style>
+
 
 </head>
 
