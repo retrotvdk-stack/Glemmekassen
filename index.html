@@ -1391,6 +1391,11 @@
       return url;
     }
 
+    // iOS Detection
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isInAppBrowser = navigator.userAgent.includes('Instagram') || navigator.userAgent.includes('FBAN') || navigator.userAgent.includes('FBAV') || window.navigator.standalone === false;
+    const shouldStayMuted = isIOS || isInAppBrowser;
+
     function createPlayer({ videoId, startAt = 0, loadId = currentLoadId, onReadyCb, onStateChangeCb, onEnded, onError }) {
       // Detect platform
       const isDailymotion = videoId.startsWith('dm:');
@@ -1446,23 +1451,18 @@
         };
 
         videoElement.onplay = () => {
-          // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
-          // Increased delay for iOS in-app browsers (TikTok, Instagram, etc.)
-          if (!muted && volume > 0) {
+          // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
+          if (!shouldStayMuted && !muted && volume > 0) {
             setTimeout(() => {
               videoElement.muted = false;
-              // Force play again after unmuting to prevent iOS from pausing
-              setTimeout(() => {
-                videoElement.play().catch(() => { });
-              }, 100);
-            }, 2000); // Increased from 1000ms to 2000ms for better iOS compatibility
+            }, 500);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
 
-        // iOS in-app browser fix: Retry play if video gets paused unexpectedly
+        // Only retry on pause for non-iOS to avoid buffering loops
         videoElement.onpause = () => {
-          if (!videoElement.ended) {
+          if (!videoElement.ended && !shouldStayMuted) {
             setTimeout(() => {
               videoElement.play().catch(() => { });
             }, 100);
@@ -1573,16 +1573,11 @@
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 1; // PLAYING
 
-              // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
-              // Increased delay for iOS in-app browsers (TikTok, Instagram, etc.)
-              if (!muted && volume > 0) {
+              // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
+              if (!shouldStayMuted && !muted && volume > 0) {
                 setTimeout(() => {
                   dmPlayer.setMuted(false);
-                  // Force play again after unmuting to prevent iOS from pausing
-                  setTimeout(() => {
-                    dmPlayer.play().catch(() => { });
-                  }, 100);
-                }, 2000); // Increased from 1000ms to 2000ms for better iOS compatibility
+                }, 500);
               }
 
               // FORCE SEEK if we are resuming (live simulation)
@@ -1604,17 +1599,18 @@
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 2; // PAUSED
 
-              // iOS in-app browser fix: Retry play if video gets paused unexpectedly
-              // Don't retry if video has ended or if currently seeking
-              dmPlayer.ended.then(isEnded => {
-                if (!isEnded) {
-                  setTimeout(() => {
-                    if (currentLoad === currentLoadId && dmPlayer) {
-                      dmPlayer.play().catch(() => { });
-                    }
-                  }, 150);
-                }
-              }).catch(() => { });
+              // Only retry on non-iOS to avoid buffering loops
+              if (!shouldStayMuted) {
+                dmPlayer.ended.then(isEnded => {
+                  if (!isEnded) {
+                    setTimeout(() => {
+                      if (currentLoad === currentLoadId && dmPlayer) {
+                        dmPlayer.play().catch(() => { });
+                      }
+                    }, 150);
+                  }
+                }).catch(() => { });
+              }
 
               if (onStateChangeCb) {
                 onStateChangeCb({ data: 2 });
@@ -1765,29 +1761,21 @@
                 if (ctx.loadId === currentLoadId) {
                   if (window.YT && e.data === window.YT.PlayerState.PLAYING) {
                     playbackState.consecutiveErrorCount = 0;
-                    // Restore user's volume after autoplay starts (iOS requires muted for autoplay)
-                    if (!muted && volume > 0) {
+                    // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
+                    if (!shouldStayMuted && !muted && volume > 0) {
                       setTimeout(() => {
-                        if (ytPlayer) {
-                          ytPlayer.unMute();
-                          // Force play again after unmuting to prevent iOS from pausing
-                          setTimeout(() => {
-                            if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-                          }, 100);
-                        }
-                      }, 2000); // Increased from 100ms to 2000ms for better iOS compatibility
+                        if (ytPlayer) ytPlayer.unMute();
+                      }, 500);
                     }
                   }
 
-                  // iOS in-app browser fix: Retry play if video gets paused unexpectedly
-                  if (window.YT && e.data === window.YT.PlayerState.PAUSED) {
-                    // Check if video has ended before retrying
+                  // Only retry on pause for non-iOS to avoid buffering loops
+                  if (!shouldStayMuted && window.YT && e.data === window.YT.PlayerState.PAUSED) {
                     if (ytPlayer && ytPlayer.getPlayerState) {
                       const state = ytPlayer.getPlayerState();
                       const duration = ytPlayer.getDuration();
                       const currentTime = ytPlayer.getCurrentTime();
 
-                      // Only retry if not at the end and not manually paused
                       if (state === window.YT.PlayerState.PAUSED && duration > 0 && currentTime < duration - 1) {
                         setTimeout(() => {
                           if (ctx.loadId === currentLoadId && ytPlayer && ytPlayer.playVideo) {
