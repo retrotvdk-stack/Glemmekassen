@@ -1603,6 +1603,19 @@
             dmPlayer.on('paused', () => {
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 2; // PAUSED
+
+              // iOS in-app browser fix: Retry play if video gets paused unexpectedly
+              // Don't retry if video has ended or if currently seeking
+              dmPlayer.ended.then(isEnded => {
+                if (!isEnded) {
+                  setTimeout(() => {
+                    if (currentLoad === currentLoadId && dmPlayer) {
+                      dmPlayer.play().catch(() => { });
+                    }
+                  }, 150);
+                }
+              }).catch(() => { });
+
               if (onStateChangeCb) {
                 onStateChangeCb({ data: 2 });
               }
@@ -1765,6 +1778,26 @@
                       }, 2000); // Increased from 100ms to 2000ms for better iOS compatibility
                     }
                   }
+
+                  // iOS in-app browser fix: Retry play if video gets paused unexpectedly
+                  if (window.YT && e.data === window.YT.PlayerState.PAUSED) {
+                    // Check if video has ended before retrying
+                    if (ytPlayer && ytPlayer.getPlayerState) {
+                      const state = ytPlayer.getPlayerState();
+                      const duration = ytPlayer.getDuration();
+                      const currentTime = ytPlayer.getCurrentTime();
+
+                      // Only retry if not at the end and not manually paused
+                      if (state === window.YT.PlayerState.PAUSED && duration > 0 && currentTime < duration - 1) {
+                        setTimeout(() => {
+                          if (ctx.loadId === currentLoadId && ytPlayer && ytPlayer.playVideo) {
+                            ytPlayer.playVideo();
+                          }
+                        }, 150);
+                      }
+                    }
+                  }
+
                   if (ctx.onStateChangeCb) ctx.onStateChangeCb(e);
                 }
               },
