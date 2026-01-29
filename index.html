@@ -746,11 +746,12 @@
     /* iPad and smaller tablets (landscape) */
     @media screen and (max-width: 1024px) {
       body {
-        padding: 10px;
+        padding: 15px;
+        overflow-x: hidden;
       }
 
       .tv {
-        transform: scale(0.85);
+        transform: scale(0.9);
         transform-origin: center;
       }
     }
@@ -758,49 +759,59 @@
     /* iPad (portrait) and large phones (landscape) */
     @media screen and (max-width: 768px) {
       body {
-        padding: 5px;
-        align-items: flex-start;
-        padding-top: 20px;
+        padding: 10px;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 30px;
+        overflow-x: hidden;
       }
 
       .tv {
-        transform: scale(0.65);
-        transform-origin: top center;
+        transform: scale(0.75);
+        transform-origin: center center;
+        margin-left: 10px;
       }
 
       #tv.expanded {
-        transform: scale(0.75) translateX(-40px);
+        transform: scale(0.85) translateX(-30px);
       }
     }
 
     /* iPhone and smaller devices */
     @media screen and (max-width: 430px) {
       body {
-        padding: 2px;
-        align-items: flex-start;
-        padding-top: 10px;
+        padding: 5px;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 20px;
+        overflow-x: hidden;
       }
 
       .tv {
-        transform: scale(0.48);
-        transform-origin: top center;
-        margin-top: -20px;
+        transform: scale(0.58);
+        transform-origin: center center;
+        margin: 0 auto;
       }
 
       #tv.expanded {
-        transform: scale(0.55) translateX(-20px);
+        transform: scale(0.65) translateX(-15px);
       }
     }
 
     /* Very small phones (iPhone SE, etc.) */
     @media screen and (max-width: 375px) {
+      body {
+        padding: 3px;
+        padding-top: 15px;
+      }
+
       .tv {
-        transform: scale(0.43);
-        margin-top: -30px;
+        transform: scale(0.52);
+        margin: 0 auto;
       }
 
       #tv.expanded {
-        transform: scale(0.50) translateX(-15px);
+        transform: scale(0.58) translateX(-10px);
       }
     }
   </style>
