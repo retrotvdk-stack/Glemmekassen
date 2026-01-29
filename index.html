@@ -1533,6 +1533,7 @@
           if (!shouldStayMuted && !muted && volume > 0) {
             setTimeout(() => {
               videoElement.muted = false;
+              videoElement.volume = volume / 100; // Ensure volume is set
             }, 500);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
@@ -1655,6 +1656,7 @@
               if (!shouldStayMuted && !muted && volume > 0) {
                 setTimeout(() => {
                   dmPlayer.setMuted(false);
+                  dmPlayer.setVolume(volume / 100); // Ensure volume is set
                 }, 500);
               }
 
@@ -1842,7 +1844,10 @@
                     // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
                     if (!shouldStayMuted && !muted && volume > 0) {
                       setTimeout(() => {
-                        if (ytPlayer) ytPlayer.unMute();
+                        if (ytPlayer) {
+                          ytPlayer.unMute();
+                          ytPlayer.setVolume(volume); // Ensure volume is set
+                        }
                       }, 500);
                     }
                   }
