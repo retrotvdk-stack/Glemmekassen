@@ -1019,7 +1019,6 @@
         name: "Jetix",
         series: {
           "Oban Star Racers": ["KG1SHsBTTA8", "8xaE3zIToWc", "U76bVRyiW0s", "FcTEVV-4-dw", "Y7kL7ltJTnI", "TP6io9gyoa0"],
-          "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
           "A.T.O.M": ["6t6yO4cgWnY", "-_czQHx4Ns", "vTRaCQF_kjE", "nUeyiD4jQYs", "ig5qr4tBv4g", "PIV55gT3b28", "0Za-4iKgWKs", "R-A7kbOsyLU", "ztXk1glYC1c"],
           "Den magiske skolebus": ["rln8CplA2mg", "ikgcgGw6uf8", "WNIDvLs6hng", "ACmN2-OOHFI", "hvmtunuUSGk", "Pxi9_4Iv6W0", "j7n85Vs0J0A", "DfqBv1Dcvvk", "fpy4ffC0Qus", "PnnUPhTpkFo", "Kzcd7ohR9ss", "4WRxizns7OU"],
           "Team Galaxy": ["pXXHm6oS8ew", "NA8qJEfntbU", "9Py9Cq9MJOc", "x6KwoRTo4sE", "Eq4LmDY1j2c", "OFSTYDXAPKw", "FeVz5jdemXI", "MUqN_SpGVVo", "z2CldCFPvIU", "IrsvR4ntftI", "w8bGkTvX_no", "SCK4z6GvqEc", "KGGNXA-H7o0", "wjDuwyERCeg", "AOAgOXk5Q4U", "ONmiN-TW2wo", "x_EjzAsMbEE", "jxXz4_dCIps", "kO6ZNLtt5EQ", "A2H2GGByYL4", "SaUn0e5HoL0", "zDuM_K3wNkI", "6NTgUlo33Ic", "dwkcoHUhCuE", "BqPIypKCjOY", "iXdAgQJtuCU", "5FmNFmpRgBE", "NNktZWdAaaU", "Ok5tRQ8EUE0", "RTQbvEHHW3M", "dz1wcCzLb9c", "cWbSYLUVuYk", "1MJeVbSAAy0", "umLoHqyFmFE", "FcyzjrXEBaA", "Gv1yrQJJWsI", "Mu0jbRLy5Bo", "7eO7XHpyoPg", "Nn-RStIsR7c", "TtQVg_hIBDg", "DCje-_VYDtk", "gLRkHBfQX0w", "NjtQkbhFg3M", "_hGTgQ9eqK4", "WCIdp7fszzk", "bUW3FrqJaBM", "ez_rRxDdX9w", "6hf95Phk5wk", "kyTGrtwNJrU", "wHqx7mGiAGo", "uDPKEEJQXN4", "oXs3t6tEvQE"],
@@ -1029,6 +1028,7 @@
       {
         name: "RetroVision Blandet",
         series: {
+          "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
           "Hamtaro": [
             "iframe:https://archive.org/embed/hamtaro-episode-1-danish?autoplay=1&start=0",
             "iframe:https://archive.org/embed/s-01e-02.-the.-ham-ham.-clubhouse.-wizz.-dk?autoplay=1&start=0",
@@ -1538,12 +1538,14 @@
         };
 
         videoElement.onplay = () => {
-          // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
-          if (!shouldStayMuted && !muted && volume > 0) {
+          // Attempt to unmute on ALL platforms (iOS included)
+          // Longer delay for iOS compatibility
+          if (!muted && volume > 0) {
             setTimeout(() => {
               videoElement.muted = false;
-              videoElement.volume = volume / 100; // Ensure volume is set
-            }, 500);
+              videoElement.volume = volume / 100;
+              console.log('Unmuted video element');
+            }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
@@ -1661,12 +1663,14 @@
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 1; // PLAYING
 
-              // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
-              if (!shouldStayMuted && !muted && volume > 0) {
+              // Attempt to unmute on ALL platforms (iOS included)
+              // Longer delay for iOS compatibility  
+              if (!muted && volume > 0) {
                 setTimeout(() => {
                   dmPlayer.setMuted(false);
-                  dmPlayer.setVolume(volume / 100); // Ensure volume is set
-                }, 500);
+                  dmPlayer.setVolume(volume / 100);
+                  console.log('Unmuted Dailymotion player');
+                }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
               }
 
               // FORCE SEEK if we are resuming (live simulation)
@@ -1850,14 +1854,16 @@
                 if (ctx.loadId === currentLoadId) {
                   if (window.YT && e.data === window.YT.PlayerState.PLAYING) {
                     playbackState.consecutiveErrorCount = 0;
-                    // iOS Fix: Only unmute on non-iOS platforms to prevent pause-buffer loop
-                    if (!shouldStayMuted && !muted && volume > 0) {
+                    // Attempt to unmute on ALL platforms (iOS included)
+                    // Longer delay for iOS compatibility
+                    if (!muted && volume > 0) {
                       setTimeout(() => {
                         if (ytPlayer) {
                           ytPlayer.unMute();
-                          ytPlayer.setVolume(volume); // Ensure volume is set
+                          ytPlayer.setVolume(volume);
+                          console.log('Unmuted YouTube player');
                         }
-                      }, 500);
+                      }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
                     }
                   }
 
@@ -2898,9 +2904,12 @@
 
             e.target.setVolume(volume);
 
-            // Desktop: Unmute immediately after player is ready
-            if (!shouldStayMuted && !muted && volume > 0) {
-              e.target.unMute();
+            // Attempt to unmute on ALL platforms if not manually muted
+            if (!muted && volume > 0) {
+              setTimeout(() => {
+                e.target.unMute();
+                console.log('Unmuted in onReady');
+              }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
             } else if (muted) {
               e.target.mute();
             }
