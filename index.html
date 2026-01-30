@@ -464,6 +464,9 @@
       width: 40px;
       padding: 20px 5px;
       overflow: hidden;
+      position: absolute;
+      /* Push to right edge without affecting flow */
+      right: 20px;
     }
 
     .tv-guide.collapsed .guide-header h2,
@@ -768,6 +771,11 @@
         transform: scale(0.9);
         transform-origin: right center;
       }
+
+      .tv-guide.collapsed {
+        right: 15px;
+        /* Closer to edge on iPad */
+      }
     }
 
     /* iPad (portrait) and large phones (landscape) */
@@ -789,6 +797,11 @@
       .tv-guide {
         transform: scale(0.85);
         transform-origin: right center;
+      }
+
+      .tv-guide.collapsed {
+        right: 10px;
+        /* Even closer on smaller iPad portrait */
       }
 
       #tv.expanded {
