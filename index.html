@@ -1667,12 +1667,9 @@
             // Forcibly fix Dailymotion wrapper heights using MutationObserver
             const playerDiv = document.getElementById('player');
             const fixDailyMotionStyles = () => {
-              // Fix #player element itself (SDK adds padding-bottom: 56.25%)
               if (playerDiv.style.paddingBottom) {
                 playerDiv.style.setProperty('padding-bottom', '0', 'important');
               }
-
-              // Target all divs inside #player and force height
               playerDiv.querySelectorAll('div, iframe').forEach(el => {
                 if (el.style.height && el.style.height !== '100%') {
                   el.style.setProperty('height', '100%', 'important');
@@ -1682,10 +1679,7 @@
               });
             };
 
-            // Initial fix
             fixDailyMotionStyles();
-
-            // Watch for changes
             const observer = new MutationObserver(fixDailyMotionStyles);
             observer.observe(playerDiv, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
 
@@ -1699,35 +1693,28 @@
               dmInternalState = 1; // PLAYING
 
               // Attempt to unmute on ALL platforms (iOS included)
-              // Longer delay for iOS compatibility  
               if (!muted && volume > 0) {
                 setTimeout(() => {
                   dmPlayer.setMuted(false);
                   dmPlayer.setVolume(volume / 100);
                   console.log('Unmuted Dailymotion player');
-                }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
-              }
 
-              // FORCE SEEK if we are resuming (live simulation)
-              if (startAt > 0) {
-                dmPlayer.currentTime.then(t => {
-                  if (Math.abs(t - startAt) > 3) {
-                    console.log(`DM Forcing seek to ${startAt} (current: ${t})`);
-                    dmPlayer.seek(startAt);
+                  // Secondary attempt for iOS to ensure it sticks
+                  if (isIOS) {
+                    setTimeout(() => {
+                      if (dmPlayer && !muted) {
+                        dmPlayer.setMuted(false);
+                        dmPlayer.setVolume(volume / 100);
+                      }
+                    }, 2000);
                   }
-                });
-              }
-
-              if (onStateChangeCb) {
-                onStateChangeCb({ data: 1 }); // 1 = PLAYING (same as YT)
+                }, shouldStayMuted ? 3000 : 500);
               }
             });
 
             dmPlayer.on('paused', () => {
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 2; // PAUSED
-
-              // Only retry on non-iOS to avoid buffering loops
               if (!shouldStayMuted) {
                 dmPlayer.ended.then(isEnded => {
                   if (!isEnded) {
@@ -1739,19 +1726,28 @@
                   }
                 }).catch(() => { });
               }
-
-              if (onStateChangeCb) {
-                onStateChangeCb({ data: 2 });
-              }
+              if (onStateChangeCb) onStateChangeCb({ data: 2 });
             });
 
             dmPlayer.on('video_end', () => {
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 0; // ENDED
-              if (onStateChangeCb) {
-                onStateChangeCb({ data: 0 }); // 0 = ENDED (same as YT)
-              }
+              if (onStateChangeCb) onStateChangeCb({ data: 0 });
             });
+
+            // FORCE SEEK if we are resuming (live simulation)
+            if (startAt > 0) {
+              dmPlayer.currentTime.then(t => {
+                if (Math.abs(t - startAt) > 3) {
+                  console.log(`DM Forcing seek to ${startAt} (current: ${t})`);
+                  dmPlayer.seek(startAt);
+                }
+              });
+            }
+
+            if (onStateChangeCb) {
+              onStateChangeCb({ data: 1 }); // 1 = PLAYING (same as YT)
+            }
 
             // Initial ready callback
             if (onReadyCb) {
@@ -1872,7 +1868,7 @@
         } else {
           // Create new YouTube player
           ytPlayer = new window.YT.Player("player", {
-            host: 'https://www.youtube.com',
+            host: 'https://www.youtube-nocookie.com',
             videoId: cleanId,
             playerVars: {
               playsinline: 1,
