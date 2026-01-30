@@ -28,8 +28,9 @@
     }
 
     .tv {
-      width: 680px;
-      height: 440px;
+      width: 800px;
+      height: 480px;
+      /* Increased height proportionally */
       position: relative;
       padding: 20px;
       display: flex;
@@ -56,7 +57,7 @@
     }
 
     .monitor-encasement {
-      flex: 3;
+      flex: 4;
       background: #111;
       border-radius: 24px;
       padding: 15px;
@@ -773,13 +774,13 @@
       }
 
       .tv-guide.collapsed {
-        right: 15px;
-        /* Pushed to extreme edge */
+        right: 5px;
+        /* Absolute edge */
       }
 
       #tv.expanded {
-        transform: scale(1.6) translateX(-140px);
-        /* Aggressive scale for iPad landscape */
+        transform: scale(1.7) translateX(-160px);
+        /* Maximized scale for iPad landscape */
       }
     }
 
@@ -794,7 +795,7 @@
       }
 
       .tv {
-        transform: scale(0.9);
+        transform: scale(1.1);
         transform-origin: center center;
         margin: 0;
       }
@@ -805,13 +806,13 @@
       }
 
       .tv-guide.collapsed {
-        right: 10px;
-        /* Pushed to extreme edge */
+        right: 5px;
+        /* Absolute edge */
       }
 
       #tv.expanded {
-        transform: scale(1.3) translateX(-100px);
-        /* Aggressive scale for iPad portrait */
+        transform: scale(1.4) translateX(-120px);
+        /* Maximized scale for iPad portrait */
       }
     }
 
@@ -826,7 +827,7 @@
       }
 
       .tv {
-        transform: scale(0.58);
+        transform: scale(0.68);
         transform-origin: center center;
         margin: 0 auto;
       }
@@ -3113,7 +3114,7 @@
       playbackMonitorInterval = setInterval(() => {
         if (!on || !player || !isIOS) return;
 
-        // "Heartbeat" check: if TV is on but not playing for > 5s, force a play call
+        // "Triple-Trigger" check: if TV is on but not playing for > 2s, force a play call sequence
         if (!playbackState.isPlayingAd && !playbackState.isStatic) {
           const now = Date.now();
           const lastActivity = playbackState.lastActivity || now;
@@ -3126,23 +3127,36 @@
           } else if (playerType === 'dailymotion' && dmPlayer) {
             // 2 (paused), -1 (unstarted/buffering)
             if (dmInternalState === 2 || dmInternalState === -1) isStuck = true;
+          } else if (playerType === 'video' && videoElement) {
+            if (videoElement.paused) isStuck = true;
           }
 
           if (isStuck) {
-            if (now - lastActivity > 4000) { // Check every 4s
-              console.log("iOS Heartbeat: Player stuck, forcing play...");
-              if (player && player.playVideo) {
-                player.playVideo();
-                // If it's DM, also try explicit .play()
+            if (now - lastActivity > 2500) { // Check every 2.5s
+              console.log("iOS Triple-Trigger: Player stuck, forcing play sequence...");
+
+              const forcePlay = () => {
+                if (player && player.mute) player.mute();
+                if (player && player.playVideo) player.playVideo();
+
+                // Explicit Dailymotion/Video fallbacks
                 if (playerType === 'dailymotion' && dmPlayer) dmPlayer.play().catch(() => { });
-              }
+                if (playerType === 'video' && videoElement) videoElement.play().catch(() => { });
+
+                // Re-unmute after a delay to "kick" the audio engine
+                setTimeout(() => {
+                  if (on && player && player.unMute) player.unMute();
+                }, 800);
+              };
+
+              forcePlay();
               playbackState.lastActivity = now;
             }
           } else {
             playbackState.lastActivity = now;
           }
         }
-      }, 2000);
+      }, 1500); // Check more frequently
     }
 
     function stopPlaybackMonitor() {
