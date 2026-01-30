@@ -22,6 +22,8 @@
       background-size: 50px 50px;
       height: 100vh;
       display: flex;
+      flex-direction: row;
+      /* Desktop: side by side */
       justify-content: center;
       align-items: center;
       font-family: 'Courier New', monospace;
@@ -316,6 +318,8 @@
     #main-layout {
       position: relative;
       display: flex;
+      flex-direction: row;
+      /* Desktop: side by side */
       align-items: center;
       justify-content: center;
       width: 100vw;
@@ -469,9 +473,8 @@
       width: 40px;
       padding: 20px 5px;
       overflow: hidden;
-      position: absolute;
-      /* Push to right edge without affecting flow */
-      right: 60px;
+      position: relative;
+      /* Stay in normal flow on desktop */
     }
 
     .tv-guide.collapsed .guide-header h2,
@@ -756,69 +759,145 @@
     }
 
 
+    /* iOS Tap to Start Overlay */
+    #iosOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      cursor: pointer;
+    }
+
+    #iosOverlay.show {
+      display: flex;
+    }
+
+    #iosOverlay h1 {
+      color: #0f0;
+      font-size: 48px;
+      text-align: center;
+      text-shadow: 0 0 20px #0f0;
+      animation: pulse 2s infinite;
+    }
+
+    #iosOverlay p {
+      color: #888;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
     /* ========================================
        RESPONSIVE MOBILE STYLING
        ======================================== */
 
-    /* iPad and smaller tablets (landscape) */
+    /* iPad and smaller tablets (landscape) - HORIZONTAL GUIDE */
     @media screen and (max-width: 1024px) {
       body {
-        padding: 15px;
-        overflow-x: hidden;
-      }
-
-      .tv {
-        transform: scale(1.1);
-        transform-origin: center;
-      }
-
-      .tv-guide {
-        transform: scale(0.9);
-        transform-origin: right center;
-      }
-
-      .tv-guide.collapsed {
-        right: 5px;
-        /* Absolute edge */
-      }
-
-      #tv.expanded {
-        transform: scale(1.6) translateX(-130px);
-        /* Adjusted for safe left margin */
-        /* Maximized scale with height constraint check */
-      }
-    }
-
-    /* iPad (portrait) and large phones (landscape) */
-    @media screen and (max-width: 768px) {
-      body {
         padding: 10px;
+        flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding-top: 30px;
-        overflow-x: hidden;
+        gap: 15px;
+      }
+
+      #main-layout {
+        flex-direction: column;
       }
 
       .tv {
-        transform: scale(1.1);
-        transform-origin: center center;
+        transform: scale(1.0);
+        transform-origin: center;
         margin: 0;
       }
 
+      #tv.expanded {
+        transform: scale(1.0);
+      }
+
+      /* Horizontal guide below TV */
       .tv-guide {
-        transform: scale(0.85);
-        transform-origin: right center;
+        position: relative;
+        width: 100%;
+        max-width: 95vw;
+        height: 180px;
+        transform: none;
+        right: auto;
+        top: auto;
+        flex-direction: column;
       }
 
       .tv-guide.collapsed {
-        right: 5px;
-        /* Absolute edge */
+        height: 50px;
+        overflow: hidden;
       }
 
-      #tv.expanded {
-        transform: scale(1.3) translateX(-90px);
-        /* Adjusted for safe left margin */
-        /* Maximized scale for iPad portrait */
+      .guide-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 2px solid #333;
+        margin-bottom: 10px;
+      }
+
+      .guide-header h2 {
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .guide-toggle {
+        position: static;
+        transform: rotate(90deg);
+      }
+
+      .tv-guide.collapsed .guide-toggle {
+        transform: rotate(-90deg);
+      }
+
+      #guide-content {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 15px;
+        padding: 0 10px 10px 10px;
+      }
+
+      .channel-block {
+        min-width: 200px;
+        flex-shrink: 0;
+      }
+    }
+
+    /* iPad (portrait) and large phones (landscape) - HORIZONTAL GUIDE */
+    @media screen and (max-width: 768px) {
+      .tv {
+        transform: scale(0.9);
+      }
+
+      .tv-guide {
+        height: 160px;
+      }
+
+      .tv-guide.collapsed {
+        height: 45px;
       }
     }
 
@@ -3260,36 +3339,57 @@
         });
       } else {
         on = true; muted = false;
-        if (isIOS) startPlaybackMonitor();
-        // Resume on last used channel (loaded from state)
-        // current = Math.floor(Math.random() * channels.length);
 
-        // Random Week Number
-        const weekNum = Math.floor(Math.random() * 52) + 1;
-        const weekEl = document.getElementById('week-display');
-        if (weekEl) weekEl.innerText = `UGE ${weekNum} - 2004`;
-
-        // Apply filters when turning on
-        applyFilters();
-
-        // Update LED light when TV turns on
-        updateAdLed();
-
-        // Initialize playlists
-        channels.forEach((_, idx) => ensureQueue(idx));
-
-        if (window.location.protocol === 'file:') {
-          updateOSD("KØR VIA LOCALSERVER FOR VIDEO", true);
-        } else {
-          updateOSD("Tænder...", false);
+        // Check if iOS and needs user interaction
+        if (isIOS && !sessionStorage.getItem('iosInteractionDone')) {
+          // Show overlay and wait for user tap
+          const overlay = document.getElementById('iosOverlay');
+          if (overlay) {
+            overlay.classList.add('show');
+            overlay.onclick = () => {
+              sessionStorage.setItem('iosInteractionDone', 'true');
+              overlay.classList.remove('show');
+              // Now start playback
+              initializeTVPlayback();
+            };
+          }
+          return; // Don't continue until user taps
         }
 
-        // Update OSD if hovering
-        if (isHovering) updateOSD(`${current + 1}. ${channels[current].name}`, true);
-
-        // Start with random video at random time like all other channels
-        loadChannel(true, false, false, false, false);
+        initializeTVPlayback();
       }
+    }
+
+    function initializeTVPlayback() {
+      if (isIOS) startPlaybackMonitor();
+      // Resume on last used channel (loaded from state)
+      // current = Math.floor(Math.random() * channels.length);
+
+      // Random Week Number
+      const weekNum = Math.floor(Math.random() * 52) + 1;
+      const weekEl = document.getElementById('week-display');
+      if (weekEl) weekEl.innerText = `UGE ${weekNum} - 2004`;
+
+      // Apply filters when turning on
+      applyFilters();
+
+      // Update LED light when TV turns on
+      updateAdLed();
+
+      // Initialize playlists
+      channels.forEach((_, idx) => ensureQueue(idx));
+
+      if (window.location.protocol === 'file:') {
+        updateOSD("KØR VIA LOCALSERVER FOR VIDEO", true);
+      } else {
+        updateOSD("Tænder...", false);
+      }
+
+      // Update OSD if hovering
+      if (isHovering) updateOSD(`${current + 1}. ${channels[current].name}`, true);
+
+      // Start with random video at random time like all other channels
+      loadChannel(true, false, false, false, false);
     }
 
     function chUp() {
