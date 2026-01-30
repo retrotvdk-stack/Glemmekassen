@@ -1575,7 +1575,7 @@
               videoElement.muted = false;
               videoElement.volume = volume / 100;
               console.log('Unmuted video element');
-            }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
+            }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
@@ -1650,14 +1650,19 @@
               playsinline: true,
               autoplay: true,
               controls: false,
-              'start-time': startAt, // SDK v2 uses 'start-time' in params
-              mute: true, // Required for iOS autoplay
+              'start-time': startAt,
+              mute: true,
               'ui-theme': 'dark',
               'aspect-ratio': 'none'
             }
           }).then((dmInstance) => {
-            if (currentLoad !== currentLoadId) return; // Stale load
+            if (currentLoad !== currentLoadId) return;
             dmPlayer = dmInstance;
+
+            // Explicitly call play for iOS
+            if (isIOS) {
+              dmPlayer.play().catch(e => console.log("DM Initial play catch:", e));
+            }
 
             // Forcibly fix Dailymotion wrapper heights using MutationObserver
             const playerDiv = document.getElementById('player');
@@ -1700,7 +1705,7 @@
                   dmPlayer.setMuted(false);
                   dmPlayer.setVolume(volume / 100);
                   console.log('Unmuted Dailymotion player');
-                }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
+                }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
               }
 
               // FORCE SEEK if we are resuming (live simulation)
@@ -1907,7 +1912,7 @@
                           ytPlayer.setVolume(volume);
                           console.log('Unmuted YouTube player');
                         }
-                      }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
+                      }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
                     }
                   }
 
@@ -2953,7 +2958,7 @@
               setTimeout(() => {
                 e.target.unMute();
                 console.log('Unmuted in onReady');
-              }, shouldStayMuted ? 1500 : 500); // Longer delay on iOS
+              }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
             } else if (muted) {
               e.target.mute();
             }
