@@ -1003,7 +1003,6 @@
           "Legenden om Tarzan": ["w1olCJ3g98U", "amy4PzB_MHo", "wn77F5TX7VA", "i39mbdx2d1U", "upyWvx1z75s", "-grXg0n_wVI", "fmhdSho74rM", "HdON75xe6Og", "o5xIeFSHXUE", "mHnDY5IcRJM", "PtYJgMvIBj8"],
           "Frikvarter": ["kZgDK8eMKyI", "5Nw-20vEsJI", "fXD71RmheyA"],
           "Brandy og Hr. Wimse": ["fYOfGZy4ENM", "ZMWVLORH-FA", "ES0nKwEMOIU", "LnwXLju-XDw", "3tKHDWC1lD4", "Vo2YHTW8KrY", "tF9F6cCNH3U", "Y2AWBSVp1sI", "81SRPYBNc-4", "9MwK0W4-0cg", "ktCg7ogKUy8", "Ldi88MkRmv4", "cmHfAOSJ3Tg", "G2JCHgtViXU", "C-UQFXOUq4w", "QNTBCoJdbc4", "i_aeOtOp3U0"],
-          "Disney klassikere": ["UrSeT4NMCdE"],
           "Barbaren Dave": ["KK6WO8h1b84", "rEKwKmf5xP8", "YwSHsT_LiVA", "XYFdkFzmEug", "sZiaT1l8JI8", "3Dbn0KqbvMY", "URAQseQvP4c", "2FrTDN33a_0", "SOMOC8OCobE", "I9dx8fo-RJU", "rsTUjOUt8BE", "wj19J-Uhyfw", "tHF9VS5TJ-U", "uIl6Q-SEYN4", "-m74C1A4TFc"],
           "Filmore!": ["NW7QHaz3kKE", "nkZAJL3BBwY", "mIyXivF_2XI", "nKLCAlmHzkI", "P3S4_fqgC98", "77cvJbnt6S4", "y3Rx-2uUDz8", "nOW0blBVTzE", "egwqd3WGTN8"],
           "Lloyd I rummet": ["vkWeQm9qRCw", "9JYjtx00GB4", "OmpHmOMLi6U", "5YB_5qgXZnQ", "yPzY7NhqLAY", "Y3-XLJlv0jQ", "_JJQikHPSRI", "R2O5m3qFQXI", "9qFpmtgIGpI", "jKzWvNx7XBo", "NiUew9usjV0", "FZL3PeLslz4", "Gms6YwqVBt0"]
@@ -1745,6 +1744,17 @@
             const sep = finalSrc.includes('?') ? '&' : '?';
             finalSrc += sep + 'start=' + Math.floor(startAt);
           }
+        }
+
+        // Handle Archive.org mute parameter
+        if ((muted || volume === 0) && finalSrc.includes('archive.org')) {
+          if (!finalSrc.includes('muted=1')) {
+            const sep = finalSrc.includes('?') ? '&' : '?';
+            finalSrc += sep + 'muted=1';
+          }
+        } else if (!muted && volume > 0 && finalSrc.includes('archive.org')) {
+          // Ensure muted=1 is removed if we are unmuting
+          finalSrc = finalSrc.replace(/[&?]muted=1/, '');
         }
 
         // Create iframe element
@@ -2867,7 +2877,7 @@
         if (!state || state.id !== videoId) {
           channelStates[chKey].currentVideo = {
             id: videoId,
-            startTime: Date.now(),
+            startTime: Date.now() - (seekTo * 1000), // Adjust startTime by the initial seek offset
             duration: 0
           };
           // Reset channel-specific pending seek
@@ -3270,8 +3280,9 @@
 
         // Handle different player types - call mute directly on the actual player instance
         if (playerType === 'iframe') {
-          // Iframe players don't support mute
           showVolume();
+          // Iframe players need a reload to apply mute state via URL
+          loadChannel(false, false, false, true);
         } else if (playerType === 'youtube' && ytPlayer) {
           // YouTube player - call mute/unmute directly on ytPlayer
           try {
