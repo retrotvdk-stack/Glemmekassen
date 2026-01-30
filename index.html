@@ -325,9 +325,15 @@
       width: 100vw;
       height: 100vh;
       box-sizing: border-box;
-      gap: 20px;
-      /* Gap to keep guide near edge */
+      gap: 60px;
+      /* Gap to keep guide away from TV */
       overflow: hidden;
+      transition: gap 0.3s ease;
+    }
+
+    #main-layout.guide-collapsed {
+      gap: 0px;
+      /* TV centers naturally without margin when sidebar is absolute */
     }
 
     .tv-guide {
@@ -474,7 +480,6 @@
       padding: 20px 5px;
       overflow: hidden;
       position: relative;
-      /* Stay in normal flow on desktop */
     }
 
     .tv-guide.collapsed .guide-header h2,
@@ -671,6 +676,74 @@
       font-weight: bold;
     }
 
+    /* Support Link / Coffee Badge (Sidebar Placement) */
+    .guide-sidebar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      height: 480px;
+      /* High enough to align with TV */
+      justify-content: flex-start;
+      transition: opacity 0.3s ease, transform 0.3s ease, position 0s ease 0.3s;
+    }
+
+    /* Position sidebar absolutely when guide is collapsed so TV can center */
+    .guide-sidebar:has(.tv-guide.collapsed) {
+      position: absolute;
+      right: -50px;
+      /* Place at very edge of screen, slightly beyond */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      /* Lower than TV so it doesn't overlap */
+    }
+
+    .coffee-link {
+      text-decoration: none;
+      width: 100%;
+      max-width: 300px;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+      display: block;
+    }
+
+    /* Hide button when tv-guide is collapsed */
+    .tv-guide.collapsed+.coffee-link {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+    }
+
+    .coffee-plate {
+      background: #f4c430;
+      color: #3e2723;
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 12px 18px;
+      border-radius: 4px;
+      border: 3px solid #5d4037;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transform: rotate(-1deg);
+    }
+
+    .coffee-plate:hover {
+      background: #ffdb58;
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .coffee-plate:active {
+      transform: scale(0.95);
+    }
+
     /* ANTENNA STYLES */
     .antenna-container {
       position: absolute;
@@ -759,48 +832,9 @@
     }
 
 
-    /* iOS Tap to Start Overlay */
+    /* iOS Tap to Start Overlay - DISABLED */
     #iosOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 10000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 20px;
-      cursor: pointer;
-    }
-
-    #iosOverlay.show {
-      display: flex;
-    }
-
-    #iosOverlay h1 {
-      color: #0f0;
-      font-size: 48px;
-      text-align: center;
-      text-shadow: 0 0 20px #0f0;
-      animation: pulse 2s infinite;
-    }
-
-    #iosOverlay p {
-      color: #888;
-      font-size: 18px;
-      text-align: center;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.5;
-      }
+      display: none !important;
     }
 
     /* ========================================
@@ -1036,16 +1070,25 @@
       </div>
     </div>
 
-    <!-- TV GUIDE SIDEBAR -->
-    <div class="tv-guide" id="tvGuide">
-      <div class="guide-header">
-        <h2>TV Oversigt</h2>
-        <button class="guide-toggle" onclick="toggleGuide()" aria-label="Toggle guide">◀</button>
-        <span id="week-display" class="week-badge"></span>
+    <!-- TV GUIDE SIDEBAR COLUMN -->
+    <div class="guide-sidebar">
+      <div class="tv-guide" id="tvGuide">
+        <div class="guide-header">
+          <h2>TV Oversigt</h2>
+          <button class="guide-toggle" onclick="toggleGuide()" aria-label="Toggle guide">◀</button>
+          <span id="week-display" class="week-badge"></span>
+        </div>
+        <div id="guide-content">
+          <!-- Populated by JS -->
+        </div>
       </div>
-      <div id="guide-content">
-        <!-- Populated by JS -->
-      </div>
+
+      <!-- Support Link -->
+      <a href="https://buymeacoffee.com/retrokyllingen.dk?new=1" target="_blank" class="coffee-link">
+        <div class="coffee-plate">
+          <span style="font-size: 18px;">☕</span> KØB MIG EN KAFFE
+        </div>
+      </a>
     </div>
 
   </div>
@@ -1159,12 +1202,12 @@
         series: {
           "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
           "Hamtaro": [
-            "iframe:https://archive.org/embed/hamtaro-episode-1-danish?autoplay=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-02.-the.-ham-ham.-clubhouse.-wizz.-dk?autoplay=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-03.-calling.-all.-ham-hams.-wizz.-dk?autoplay=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-04.-come.-out.-bijou.-wizz.-dk?autoplay=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-05.-diamonds.-of.-sugar.-wizz.-dk?autoplay=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-06.-first.-time.-at.-the.-beach.-wizz.-dk?autoplay=1&start=0"
+            "iframe:https://archive.org/embed/hamtaro-episode-1-danish?autoplay=1&play=1&start=0",
+            "iframe:https://archive.org/embed/s-01e-02.-the.-ham-ham.-clubhouse.-wizz.-dk?autoplay=1&play=1&start=0",
+            "iframe:https://archive.org/embed/s-01e-03.-calling.-all.-ham-hams.-wizz.-dk?autoplay=1&play=1&start=0",
+            "iframe:https://archive.org/embed/s-01e-04.-come.-out.-bijou.-wizz.-dk?autoplay=1&play=1&start=0",
+            "iframe:https://archive.org/embed/s-01e-05.-diamonds.-of.-sugar.-wizz.-dk?autoplay=1&play=1&start=0",
+            "iframe:https://archive.org/embed/s-01e-06.-first.-time.-at.-the.-beach.-wizz.-dk?autoplay=1&play=1&start=0"
           ],
           "Richard Scarrys Travle Verden": ["cM01SH5IYYo", "JCq_hSExlnQ"],
           "Superman": ["t51Si5XEgxg", "RcJFaH9MQ0E", "4Ygh3a1oipo", "-hVs5ZhFJj8", "Ewn4e_RklpM"],
@@ -1892,6 +1935,13 @@
           finalSrc = finalSrc.replace('?&', '?').replace('&&', '&');
         }
 
+        // Add cache-busting timestamp for archive.org to force autoplay on reload
+        // Browsers block autoplay on iframe reload - timestamp makes it a "new" request
+        if (finalSrc.includes('archive.org')) {
+          const sep = finalSrc.includes('?') ? '&' : '?';
+          finalSrc += sep + 't=' + Date.now();
+        }
+
         // Create iframe element
         const container = document.getElementById('player');
         container.innerHTML = '';
@@ -1961,14 +2011,14 @@
           };
 
           // Reuse existing YouTube player
-          ytPlayer.loadVideoById({ videoId: cleanId, startSeconds: Math.floor(startAt), suggestedQuality: 'hd1080' });
+          ytPlayer.loadVideoById({ videoId: cleanId, startSeconds: Math.floor(startAt) });
           if (onReadyCb) {
             if (currentLoad === currentLoadId) onReadyCb({ target: player });
           }
         } else {
           // Create new YouTube player
           ytPlayer = new window.YT.Player("player", {
-            host: 'https://www.youtube-nocookie.com',
+            host: 'https://www.youtube.com',
             videoId: cleanId,
             playerVars: {
               playsinline: 1,
@@ -1978,16 +2028,10 @@
               start: Math.floor(startAt),
               enablejsapi: 1,
               mute: 1,
-              origin: window.location.protocol === 'file:' ? undefined : window.location.origin,
-              widget_referrer: window.location.protocol === 'file:' ? undefined : window.location.href,
-              vq: 'hd1080',
               modestbranding: 1,
               iv_load_policy: 3,
               fs: 0,
               disablekb: 1,
-              showinfo: 0,
-              adformat: '1_5',
-              adsense_id: '1',
               cc_load_policy: 0
             },
             events: {
@@ -2715,11 +2759,11 @@
           const availableEpisodes = sVids.filter(vidId => !recentHistory.includes(vidId));
 
           // FIX: Small Series Exemption
-          // If a series has very few videos (e.g. Hamtaro has 1), the "available > inQueue" logic blocks it forever 
-          // if the only video is in history.
-          // Rule: If series has < 3 videos, allows repeating IF it's not already in the queue.
-          if (sVids.length < 3) {
-            return inQueueCount < sVids.length; // Just ensure we don't duplicate it in the SAME batch too many times
+          // If a series has very few videos (e.g. Hamtaro has 6), the "available > inQueue" logic blocks it forever 
+          // if all videos are in history.
+          // Rule: If series has <= 10 videos, allow repeating IF it's not already saturating the queue.
+          if (sVids.length <= 10) {
+            return inQueueCount < Math.max(2, sVids.length); // Allow up to 2 or series length (whichever is greater) in queue
           }
 
           // A series is ONLY available if it has more available episodes than its current count in the queue
@@ -3347,25 +3391,7 @@
           }, 1500);
         });
       } else {
-        // Check if iOS and needs user interaction BEFORE setting on=true
-        if (isIOS && !sessionStorage.getItem('iosInteractionDone')) {
-          // Show overlay and wait for user tap
-          const overlay = document.getElementById('iosOverlay');
-          if (overlay) {
-            overlay.classList.add('show');
-            overlay.onclick = () => {
-              sessionStorage.setItem('iosInteractionDone', 'true');
-              overlay.classList.remove('show');
-              // NOW set on=true and start playback
-              on = true;
-              muted = false;
-              initializeTVPlayback();
-            };
-          }
-          return; // Don't continue until user taps
-        }
-
-        // Non-iOS or already interacted: power on immediately
+        // Power on
         on = true;
         muted = false;
         initializeTVPlayback();
@@ -3594,15 +3620,18 @@
     function toggleGuide() {
       playClick();
       guideCollapsed = !guideCollapsed;
+      const layout = document.getElementById('main-layout');
       const guide = document.getElementById('tvGuide');
       const tv = document.getElementById('tv');
 
       if (guideCollapsed) {
         guide.classList.add('collapsed');
         tv.classList.add('expanded');
+        layout.classList.add('guide-collapsed');
       } else {
         guide.classList.remove('collapsed');
         tv.classList.remove('expanded');
+        layout.classList.remove('guide-collapsed');
       }
 
       // Save state
