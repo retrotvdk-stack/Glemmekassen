@@ -3347,9 +3347,7 @@
           }, 1500);
         });
       } else {
-        on = true; muted = false;
-
-        // Check if iOS and needs user interaction
+        // Check if iOS and needs user interaction BEFORE setting on=true
         if (isIOS && !sessionStorage.getItem('iosInteractionDone')) {
           // Show overlay and wait for user tap
           const overlay = document.getElementById('iosOverlay');
@@ -3358,13 +3356,18 @@
             overlay.onclick = () => {
               sessionStorage.setItem('iosInteractionDone', 'true');
               overlay.classList.remove('show');
-              // Now start playback
+              // NOW set on=true and start playback
+              on = true;
+              muted = false;
               initializeTVPlayback();
             };
           }
           return; // Don't continue until user taps
         }
 
+        // Non-iOS or already interacted: power on immediately
+        on = true;
+        muted = false;
         initializeTVPlayback();
       }
     }
@@ -3396,6 +3399,9 @@
 
       // Update OSD if hovering
       if (isHovering) updateOSD(`${current + 1}. ${channels[current].name}`, true);
+
+      // Render TV Guide with populated playlists
+      renderTVGuide();
 
       // Start with random video at random time like all other channels
       loadChannel(true, false, false, false, false);
