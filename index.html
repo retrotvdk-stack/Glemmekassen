@@ -777,7 +777,8 @@
       }
 
       #tv.expanded {
-        transform: scale(1.1) translateX(-60px);
+        transform: scale(1.35) translateX(-100px);
+        /* Increased scale for iPad landscape */
       }
     }
 
@@ -807,7 +808,8 @@
       }
 
       #tv.expanded {
-        transform: scale(0.9) translateX(-40px);
+        transform: scale(1.15) translateX(-80px);
+        /* Increased scale for iPad portrait */
       }
     }
 
@@ -1160,7 +1162,8 @@
       adIndex: 0,
       isPlayingAd: false,
       firstAdAfterPowerOn: false,
-      consecutiveErrorCount: 0 // Track errors to prevent infinite skip loops
+      consecutiveErrorCount: 0,
+      lastActivity: Date.now() // Track for iOS heartbeat
     };
     let saveInterval;
     let ytReady = false;
@@ -1647,11 +1650,11 @@
           window.dailymotion.createPlayer('player', {
             video: cleanId,
             params: {
-              playsinline: true,
-              autoplay: true,
-              controls: false,
+              playsinline: 1,
+              autoplay: 1,
+              controls: 0,
               'start-time': startAt,
-              mute: true,
+              mute: 1,
               'ui-theme': 'dark',
               'aspect-ratio': 'none'
             }
@@ -3096,6 +3099,53 @@
       }
     }
 
+    let playbackMonitorInterval = null;
+
+    function startPlaybackMonitor() {
+      if (playbackMonitorInterval) return;
+      playbackMonitorInterval = setInterval(() => {
+        if (!on || !player || !isIOS) return;
+
+        // "Heartbeat" check: if TV is on but not playing for > 5s, force a play call
+        if (!playbackState.isPlayingAd && !playbackState.isStatic) {
+          const now = Date.now();
+          const lastActivity = playbackState.lastActivity || now;
+
+          let isStuck = false;
+          if (playerType === 'youtube' && ytPlayer && ytPlayer.getPlayerState) {
+            const s = ytPlayer.getPlayerState();
+            // -1 (unstarted), 3 (buffering), 2 (paused)
+            if (s === -1 || s === 3 || s === 2) isStuck = true;
+          } else if (playerType === 'dailymotion' && dmPlayer) {
+            // 2 (paused), -1 (unstarted/buffering)
+            if (dmInternalState === 2 || dmInternalState === -1) isStuck = true;
+          }
+
+          if (isStuck) {
+            if (now - lastActivity > 4000) { // Check every 4s
+              console.log("iOS Heartbeat: Player stuck, forcing play...");
+              if (player && player.playVideo) {
+                player.playVideo();
+                // If it's DM, also try explicit .play()
+                if (playerType === 'dailymotion' && dmPlayer) dmPlayer.play().catch(() => { });
+              }
+              playbackState.lastActivity = now;
+            }
+          } else {
+            playbackState.lastActivity = now;
+          }
+        }
+      }, 2000);
+    }
+
+    function stopPlaybackMonitor() {
+      if (playbackMonitorInterval) {
+        clearInterval(playbackMonitorInterval);
+        playbackMonitorInterval = null;
+      }
+    }
+
+
     // Handle Page Visibility - Resume playback when returning to tab
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden && on && player) {
@@ -3172,13 +3222,15 @@
               dmUpdateInterval = null;
             }
             on = false;
-            updateAdLed(); // Turn off LED when TV is off
+            stopPlaybackMonitor();
+            updateAdLed();
             channelStates = {}; // Clear channel states to ensure fresh playlist on next power on
             renderTVGuide(); // Will render blank because on=false
           }, 1500);
         });
       } else {
         on = true; muted = false;
+        if (isIOS) startPlaybackMonitor();
         // Resume on last used channel (loaded from state)
         // current = Math.floor(Math.random() * channels.length);
 
