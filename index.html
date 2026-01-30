@@ -466,7 +466,7 @@
       overflow: hidden;
       position: absolute;
       /* Push to right edge without affecting flow */
-      right: 20px;
+      right: 60px;
     }
 
     .tv-guide.collapsed .guide-header h2,
@@ -773,8 +773,11 @@
       }
 
       .tv-guide.collapsed {
-        right: 15px;
-        /* Closer to edge on iPad */
+        right: 40px;
+      }
+
+      #tv.expanded {
+        transform: scale(1.1) translateX(-60px);
       }
     }
 
@@ -800,12 +803,11 @@
       }
 
       .tv-guide.collapsed {
-        right: 10px;
-        /* Even closer on smaller iPad portrait */
+        right: 30px;
       }
 
       #tv.expanded {
-        transform: scale(0.95);
+        transform: scale(0.9) translateX(-40px);
       }
     }
 
@@ -1776,14 +1778,17 @@
         }
 
         // Handle Archive.org mute parameter
-        if ((muted || volume === 0) && finalSrc.includes('archive.org')) {
+        // iOS MUST be muted to autoplay
+        if ((muted || volume === 0 || isIOS) && finalSrc.includes('archive.org')) {
           if (!finalSrc.includes('muted=1')) {
             const sep = finalSrc.includes('?') ? '&' : '?';
             finalSrc += sep + 'muted=1';
           }
-        } else if (!muted && volume > 0 && finalSrc.includes('archive.org')) {
+        } else if (!muted && volume > 0 && !isIOS && finalSrc.includes('archive.org')) {
           // Ensure muted=1 is removed if we are unmuting
           finalSrc = finalSrc.replace(/[&?]muted=1/, '');
+          // Fix potential double separators
+          finalSrc = finalSrc.replace('?&', '?').replace('&&', '&');
         }
 
         // Create iframe element
