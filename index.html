@@ -309,18 +309,20 @@
 
     /* --- LAYOUT & TV GUIDE --- */
     #main-layout {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 40px;
-      padding: 20px;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .tv-guide {
       width: 300px;
       height: 480px;
-      /* Match TV height roughly */
       background: #fdfbf7;
-      /* Off-white paper */
       border: 1px solid #d3d3d3;
       box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
       padding: 20px;
@@ -328,7 +330,9 @@
       color: #333;
       overflow-y: auto;
       border-radius: 2px;
-      position: relative;
+      position: absolute;
+      right: 20px;
+      z-index: 100;
     }
 
     /* Magasinryg effekt */
@@ -493,7 +497,8 @@
     }
 
     #tv.expanded {
-      transform: scale(1.35) translateX(-80px);
+      transform: scale(1.35);
+      /* Removed translateX to keep it centered when expanded */
     }
 
 
@@ -754,8 +759,15 @@
       }
 
       .tv {
-        transform: scale(0.9);
+        transform: scale(1.05);
+        /* Increased size for iPad */
         transform-origin: center;
+      }
+
+      .tv-guide {
+        right: 15px;
+        transform: scale(0.9);
+        transform-origin: right center;
       }
     }
 
@@ -770,13 +782,21 @@
       }
 
       .tv {
-        transform: scale(0.75);
+        transform: scale(0.9);
+        /* Increased from 0.75 */
         transform-origin: center center;
-        margin-left: 10px;
+        margin: 0;
+      }
+
+      .tv-guide {
+        right: 10px;
+        transform: scale(0.8);
+        transform-origin: right center;
       }
 
       #tv.expanded {
-        transform: scale(0.85) translateX(-30px);
+        transform: scale(0.95);
+        /* Keep centered and scale up slightly more */
       }
     }
 
