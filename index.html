@@ -841,6 +841,10 @@
         right: auto;
         top: auto;
         flex-direction: column;
+        display: flex;
+        visibility: visible;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .tv-guide.collapsed {
@@ -878,11 +882,16 @@
         overflow-y: hidden;
         gap: 15px;
         padding: 0 10px 10px 10px;
+        height: auto;
+        min-height: 100px;
+        -webkit-overflow-scrolling: touch;
       }
 
       .channel-block {
         min-width: 200px;
         flex-shrink: 0;
+        display: block;
+        visibility: visible;
       }
     }
 
