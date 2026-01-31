@@ -3311,13 +3311,6 @@
     let playbackMonitorInterval = null;
 
     function startPlaybackMonitor() {
-      // COMPLETELY DISABLED ON iOS - causes constant stuttering/buffering
-      // iOS Safari handles autoplay for YouTube/Dailymotion natively
-      if (isIOS) {
-        console.log('Playback monitor disabled on iOS');
-        return;
-      }
-
       if (playbackMonitorInterval) return;
       playbackMonitorInterval = setInterval(() => {
         if (!on || !player) return;
