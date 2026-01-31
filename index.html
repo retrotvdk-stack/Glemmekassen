@@ -365,6 +365,20 @@
       }
     }
 
+    @media (max-width: 768px) {
+      .tv-guide {
+        position: relative;
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+        margin-top: 20px;
+        /* Add spacing to avoid TV legs */
+        height: auto;
+        max-height: 400px;
+        border: none;
+      }
+    }
+
     .guide-header {
       text-align: center;
       border-bottom: 2px solid #333;
@@ -3153,6 +3167,17 @@
             if (e.target.playVideo) {
               try {
                 e.target.playVideo();
+                console.log('Called playVideo in onReady');
+
+                // iOS CRITICAL: Force play again after delay to ensure it sticks
+                if (isIOS) {
+                  setTimeout(() => {
+                    if (e.target.playVideo && loadId === currentLoadId) {
+                      e.target.playVideo();
+                      console.log('iOS: Forced play after delay');
+                    }
+                  }, 500);
+                }
               } catch (err) {
                 console.log('Force play error:', err);
               }
