@@ -15,18 +15,47 @@
     body {
       margin: 0;
       padding: 0;
-      /* Retro Wallpaper Pattern */
-      background-color: #f0e6d2;
-      background-image:
-        linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .5) 50%);
-      background-size: 50px 50px;
-      height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       display: flex;
-      flex-direction: row;
-      /* Desktop: side by side */
-      justify-content: center;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
-      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: hidden;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+      width: 100%;
+      text-align: center;
+      padding: 20px 0 10px 0;
+      background: transparent;
+    }
+
+    .site-logo {
+      max-width: 200px;
+      height: auto;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+      animation: logoGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes logoGlow {
+
+      0%,
+      100% {
+        filter: drop-shadow(0 4px 8px rgba(255, 0, 0, 0.3));
+      }
+
+      50% {
+        filter: drop-shadow(0 4px 12px rgba(255, 0, 0, 0.6));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-logo {
+        max-width: 150px;
+      }
     }
 
     .tv {
@@ -1040,8 +1069,10 @@
 </head>
 
 <body>
-
-
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="logo.png" alt="Retro Kyllingen" class="site-logo">
+  </div>
 
   <div id="main-layout">
     <div class="tv" id="tv">
