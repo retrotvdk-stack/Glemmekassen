@@ -1766,11 +1766,19 @@
 
         // Only retry on pause for non-iOS to avoid buffering loops
         videoElement.onpause = () => {
-          // NEVER auto-retry on iOS - causes infinite buffering loop
-          if (!videoElement.ended && !isIOS) {
+          // DISABLED ON iOS - auto-retry causes stuttering
+          // Let the video pause naturally (user can click to resume)
+          if (isIOS) {
+            if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
+            return;
+          }
+
+          if (!videoElement.ended && !shouldStayMuted) {
             setTimeout(() => {
-              videoElement.play().catch(() => { });
-            }, 100);
+              if (videoElement && videoElement.paused && !videoElement.ended) {
+                videoElement.play().catch(e => console.log("Pause-retry failed:", e));
+              }
+            }, 500);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
         };
@@ -3322,6 +3330,13 @@
     let playbackMonitorInterval = null;
 
     function startPlaybackMonitor() {
+      // COMPLETELY DISABLED ON iOS - causes constant stuttering/buffering
+      // iOS Safari handles autoplay for YouTube/Dailymotion natively
+      if (isIOS) {
+        console.log('Playback monitor disabled on iOS');
+        return;
+      }
+
       if (playbackMonitorInterval) return;
       playbackMonitorInterval = setInterval(() => {
         if (!on || !player) return;
