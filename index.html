@@ -937,13 +937,22 @@
       }
 
       #guide-content {
-        display: block;
-        /* Stack channels vertically on mobile */
+        display: block !important;
+        /* ALWAYS show guide content on mobile - override collapsed state */
         overflow-y: auto;
         overflow-x: hidden;
         height: auto;
         max-height: 400px;
         -webkit-overflow-scrolling: touch;
+        visibility: visible !important;
+      }
+
+      /* Override collapsed hiding on mobile - guide should ALWAYS be visible */
+      .tv-guide.collapsed #guide-content,
+      .tv-guide.collapsed .guide-header h2,
+      .tv-guide.collapsed #week-display {
+        display: block !important;
+        visibility: visible !important;
       }
 
       .channel-block {
@@ -3681,6 +3690,19 @@
     }
 
     function loadGuideState() {
+      // NEVER collapse guide on mobile - always show it
+      const isMobileScreen = window.innerWidth <= 768;
+      if (isMobileScreen) {
+        guideCollapsed = false;
+        const guide = document.getElementById('tvGuide');
+        const tv = document.getElementById('tv');
+        const layout = document.getElementById('main-layout');
+        if (guide) guide.classList.remove('collapsed');
+        if (tv) tv.classList.remove('expanded');
+        if (layout) layout.classList.remove('guide-collapsed');
+        return;
+      }
+
       const saved = localStorage.getItem('guideCollapsed');
       if (saved === 'true') {
         guideCollapsed = true;
