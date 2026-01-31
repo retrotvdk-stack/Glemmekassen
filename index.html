@@ -888,8 +888,8 @@
         height: auto;
         min-height: 200px;
         padding: 15px;
-        display: flex;
-        flex-direction: column;
+        display: block;
+        /* Use block layout for guide on mobile */
         visibility: visible;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -949,11 +949,24 @@
       .channel-block {
         width: 100%;
         margin-bottom: 15px;
+        display: block !important;
+        visibility: visible !important;
       }
 
       .program-slot {
-        display: block;
+        display: block !important;
         /* Make sure program slots are visible */
+        visibility: visible !important;
+      }
+
+      .channel-title {
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      .program-content {
+        display: block !important;
+        visibility: visible !important;
       }
     }
 
@@ -1484,6 +1497,7 @@
     /* --- GUIDE & QUEUE LOGIC --- */
 
     function renderTVGuide() {
+      console.log('renderTVGuide called, TV on:', on, 'channelStates:', channelStates);
       // If TV is off, clear guide
       if (!on) {
         document.getElementById('guide-content').innerHTML = '';
@@ -1493,6 +1507,7 @@
       if (!sessionState.bannedSeries && typeof loadBans === 'function') loadBans();
 
       const container = document.getElementById('guide-content');
+      console.log('Guide container:', container, 'exists:', !!container);
       const scrollPos = container.scrollTop;
       container.innerHTML = '';
 
@@ -3260,6 +3275,8 @@
       if (playbackMonitorInterval) return;
       playbackMonitorInterval = setInterval(() => {
         if (!on || !player || !isIOS) return;
+        // DISABLE for iframe players - we can't check status and it causes stuttering
+        if (playerType === 'iframe') return;
 
         // "Triple-Trigger" check: if TV is on but not playing for > 2s, force a play call sequence
         if (!playbackState.isPlayingAd && !playbackState.isStatic) {
