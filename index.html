@@ -928,56 +928,125 @@
       }
     }
 
-    /* iPad (portrait) and large phones (landscape) - HORIZONTAL GUIDE */
+    /* Mobile/iOS - Vertical layout with guide BELOW TV */
     @media screen and (max-width: 768px) {
+      #main-layout {
+        flex-direction: column;
+        /* Stack vertically instead of side by side */
+        gap: 0;
+        height: auto;
+        min-height: 100vh;
+        padding: 10px;
+      }
+
       .tv {
-        transform: scale(0.9);
+        transform: scale(1);
+        /* No scaling on mobile */
+        margin: 0 auto 20px auto;
+        /* Center and add bottom margin */
+      }
+
+      #tv.expanded {
+        transform: scale(1);
+        /* Disable expand on mobile */
       }
 
       .tv-guide {
-        height: 160px;
+        position: static !important;
+        /* Override any absolute positioning */
+        width: 100%;
+        max-width: 600px;
+        /* Match TV width approximately */
+        margin: 0 auto;
+        /* Center the guide */
+        height: auto;
+        min-height: 200px;
+        padding: 15px;
+        display: flex;
+        visibility: visible;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .tv-guide.collapsed {
-        height: 45px;
+        /* Disable collapse on mobile */
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        overflow: visible;
       }
-    }
 
-    /* iPhone and smaller devices */
-    @media screen and (max-width: 430px) {
-      body {
-        padding: 5px;
+      .guide-sidebar {
+        position: static !important;
+        /* Keep sidebar in flow on mobile */
+      }
+
+      .guide-sidebar:has(.tv-guide.collapsed) {
+        position: static !important;
+        /* Override absolute positioning */
+        right: auto;
+        top: auto;
+        transform: none;
+      }
+
+      .guide-header {
+        display: flex;
+        justify-content: center;
         align-items: center;
-        justify-content: flex-start;
-        padding-top: 20px;
+        padding: 10px 15px;
+        border-bottom: 2px solid #333;
+        margin-bottom: 10px;
+      }
+
+      .guide-header h2 {
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .guide-toggle {
+        display: none;
+        /* Hide collapse button on mobile */
+      }
+
+      #guide-content {
+        display: block;
+        /* Stack channels vertically on mobile */
+        overflow-y: auto;
         overflow-x: hidden;
+        height: auto;
+        max-height: 400px;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .tv {
-        transform: scale(0.68);
-        transform-origin: center center;
-        margin: 0 auto;
-      }
-
-      #tv.expanded {
-        transform: scale(0.65) translateX(-15px);
+      .channel-block {
+        width: 100%;
+        margin-bottom: 15px;
       }
     }
 
-    /* Very small phones (iPhone SE, etc.) */
-    @media screen and (max-width: 375px) {
-      body {
-        padding: 3px;
-        padding-top: 15px;
-      }
-
+    /* iPhone and smaller devices - just scale TV smaller */
+    @media screen and (max-width: 430px) {
       .tv {
-        transform: scale(0.52);
-        margin: 0 auto;
+        transform: scale(0.75);
+        /* Scale down TV for small screens */
       }
 
       #tv.expanded {
-        transform: scale(0.58) translateX(-10px);
+        transform: scale(0.75);
+        /* No expand on mobile */
+      }
+    }
+
+    /* Very small phones (iPhone SE, etc.) - scale even smaller */
+    @media screen and (max-width: 375px) {
+      .tv {
+        transform: scale(0.6);
+        /* Smaller scale for tiny screens */
+      }
+
+      #tv.expanded {
+        transform: scale(0.6);
+        /* No expand on mobile */
       }
     }
   </style>
