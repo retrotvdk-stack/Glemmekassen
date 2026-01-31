@@ -903,13 +903,10 @@
       }
 
       .guide-toggle {
-        position: static;
-        transform: rotate(90deg);
+        display: none;
+        /* Hide collapse button on mobile - guide should always be visible */
       }
 
-      .tv-guide.collapsed .guide-toggle {
-        transform: rotate(-90deg);
-      }
 
       #guide-content {
         display: flex;
