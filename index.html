@@ -1822,14 +1822,19 @@
         // Set src AFTER listeners are attached to catch immediate errors
         videoElement.src = transformOneDriveUrl(videoId);
 
-        // CRITICAL iOS FIX: Only call play() when video is actually ready
-        // Calling play() before 'canplay' causes infinite loading on iOS
-        videoElement.addEventListener('canplay', function onCanPlay() {
-          videoElement.removeEventListener('canplay', onCanPlay);
-          videoElement.play().catch(error => {
-            console.log('Canplay video play blocked:', error);
+        // CRITICAL iOS FIX: Call play() immediately to trigger loading
+        // On iOS, play() must be called to start the loading process
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Initial play blocked, will retry on loadedmetadata:', error);
+            // Retry when metadata is loaded
+            videoElement.addEventListener('loadedmetadata', function onLoaded() {
+              videoElement.removeEventListener('loadedmetadata', onLoaded);
+              videoElement.play().catch(e => console.log('Retry play blocked:', e));
+            }, { once: true });
           });
-        }, { once: true });
+        }
 
       } else if (isDailymotion) {
         // === DAILYMOTION PLAYER ===
