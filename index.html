@@ -1752,14 +1752,13 @@
         };
 
         videoElement.onplay = () => {
-          // Attempt to unmute on ALL platforms (iOS included)
-          // Longer delay for iOS compatibility
-          if (!muted && volume > 0) {
+          // NEVER unmute on iOS - it will stop playback
+          if (!muted && volume > 0 && !isIOS) {
             setTimeout(() => {
               videoElement.muted = false;
               videoElement.volume = volume / 100;
               console.log('Unmuted video element');
-            }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
+            }, 500);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
@@ -1878,23 +1877,13 @@
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 1; // PLAYING
 
-              // Attempt to unmute on ALL platforms (iOS included)
-              if (!muted && volume > 0) {
+              // NEVER unmute on iOS - it will stop playback
+              if (!muted && volume > 0 && !isIOS) {
                 setTimeout(() => {
                   dmPlayer.setMuted(false);
                   dmPlayer.setVolume(volume / 100);
                   console.log('Unmuted Dailymotion player');
-
-                  // Secondary attempt for iOS to ensure it sticks
-                  if (isIOS) {
-                    setTimeout(() => {
-                      if (dmPlayer && !muted) {
-                        dmPlayer.setMuted(false);
-                        dmPlayer.setVolume(volume / 100);
-                      }
-                    }, 2000);
-                  }
-                }, shouldStayMuted ? 3000 : 500);
+                }, 500);
               }
             });
 
@@ -2100,16 +2089,15 @@
                 if (ctx.loadId === currentLoadId) {
                   if (window.YT && e.data === window.YT.PlayerState.PLAYING) {
                     playbackState.consecutiveErrorCount = 0;
-                    // Attempt to unmute on ALL platforms (iOS included)
-                    // Longer delay for iOS compatibility
-                    if (!muted && volume > 0) {
+                    // NEVER unmute on iOS - it will stop playback
+                    if (!muted && volume > 0 && !isIOS) {
                       setTimeout(() => {
                         if (ytPlayer) {
                           ytPlayer.unMute();
                           ytPlayer.setVolume(volume);
                           console.log('Unmuted YouTube player');
                         }
-                      }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
+                      }, 500);
                     }
                   }
 
@@ -3172,13 +3160,14 @@
 
             e.target.setVolume(volume);
 
-            // Attempt to unmute on ALL platforms if not manually muted
-            if (!muted && volume > 0) {
+            // CRITICAL: Never unmute on iOS - it will stop playback
+            // iOS requires user interaction to unmute
+            if (!muted && volume > 0 && !isIOS) {
               setTimeout(() => {
                 e.target.unMute();
                 console.log('Unmuted in onReady');
-              }, shouldStayMuted ? 3000 : 500); // Increased delay for iOS
-            } else if (muted) {
+              }, 500);
+            } else if (muted || isIOS) {
               e.target.mute();
             }
 
