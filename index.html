@@ -3360,10 +3360,8 @@
                 if (playerType === 'dailymotion' && dmPlayer) dmPlayer.play().catch(() => { });
                 if (playerType === 'video' && videoElement) videoElement.play().catch(() => { });
 
-                // Re-unmute after a delay to "kick" the audio engine
-                setTimeout(() => {
-                  if (on && player && player.unMute) player.unMute();
-                }, 800);
+                // CRITICAL: DO NOT unmute on iOS - it breaks autoplay
+                // iOS requires user interaction to unmute, attempting it will stop playback
               };
 
               forcePlay();
