@@ -1779,13 +1779,14 @@
 
         videoElement.onpause = () => {
           // Auto-retry to keep video playing
-          // CRITICAL: Disable on iOS - causes infinite buffering loop
-          if (!videoElement.ended && !isIOS) {
+          // iOS: Use longer delay to avoid infinite loop
+          if (!videoElement.ended) {
+            const retryDelay = isIOS ? 1000 : 100; // 1 second on iOS, 100ms others
             setTimeout(() => {
-              if (videoElement && videoElement.paused && !videoElement.ended) {
+              if (videoElement && videoElement.paused && !videoElement.ended && videoElement.readyState >= 2) {
                 videoElement.play().catch(e => console.log("Pause-retry:", e));
               }
-            }, 100);
+            }, retryDelay);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
         };
@@ -3360,7 +3361,7 @@
         // DISABLE for iframe players - we can't check status and it causes stuttering
         if (playerType === 'iframe') return;
 
-        // "Triple-Trigger" check: if TV is on but not playing for > 2s, force a play call sequence
+        // iOS: Check if stuck but with longer timeout and better conditions
         if (!playbackState.isPlayingAd && !playbackState.isStatic) {
           const now = Date.now();
           const lastActivity = playbackState.lastActivity || now;
@@ -3374,12 +3375,14 @@
             // 2 (paused), -1 (unstarted/buffering)
             if (dmInternalState === 2 || dmInternalState === -1) isStuck = true;
           } else if (playerType === 'video' && videoElement) {
-            if (videoElement.paused) isStuck = true;
+            if (videoElement.paused && videoElement.readyState >= 2) isStuck = true;
           }
 
           if (isStuck) {
-            if (now - lastActivity > 2500) { // Check every 2.5s
-              console.log("iOS Triple-Trigger: Player stuck, forcing play sequence...");
+            // iOS: Wait longer before forcing play to avoid interference
+            const timeout = isIOS ? 5000 : 2500; // 5 seconds on iOS
+            if (now - lastActivity > timeout) {
+              console.log("Playback monitor: Player stuck, forcing play...");
 
               const forcePlay = () => {
                 if (player && player.mute) player.mute();
@@ -3504,8 +3507,8 @@
     }
 
     function initializeTVPlayback() {
-      // DISABLED on iOS - interferes with natural playback
-      // if (isIOS) startPlaybackMonitor();
+      // Re-enabled with better conditions
+      if (isIOS) startPlaybackMonitor();
       // Resume on last used channel (loaded from state)
       // current = Math.floor(Math.random() * channels.length);
 
