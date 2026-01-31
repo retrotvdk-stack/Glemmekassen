@@ -3137,6 +3137,17 @@
           onReadyCb: (e) => {
             if (loadId !== currentLoadId) return; // Ignore stale load callbacks
 
+            // Skip all control attempts for iframe players (they can't be controlled)
+            if (e.target._isIframe) {
+              console.log('Iframe player ready - autoplay handles playback');
+              // Just save duration and return
+              let dur = e.target.getDuration();
+              if (dur && channelStates[chKey] && channelStates[chKey].currentVideo) {
+                channelStates[chKey].currentVideo.duration = dur;
+              }
+              return;
+            }
+
             // iOS-specific: Force playback after static (autoplay may fail on iOS)
             if (e.target.playVideo) {
               try {
