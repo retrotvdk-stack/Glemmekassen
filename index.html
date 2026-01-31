@@ -1764,21 +1764,14 @@
           if (onStateChangeCb) onStateChangeCb({ data: 1 }); // 1 = PLAYING
         };
 
-        // Only retry on pause for non-iOS to avoid buffering loops
         videoElement.onpause = () => {
-          // DISABLED ON iOS - auto-retry causes stuttering
-          // Let the video pause naturally (user can click to resume)
-          if (isIOS) {
-            if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
-            return;
-          }
-
-          if (!videoElement.ended && !shouldStayMuted) {
+          // Auto-retry to keep video playing (iOS often pauses for buffering)
+          if (!videoElement.ended) {
             setTimeout(() => {
               if (videoElement && videoElement.paused && !videoElement.ended) {
-                videoElement.play().catch(e => console.log("Pause-retry failed:", e));
+                videoElement.play().catch(e => console.log("Pause-retry:", e));
               }
-            }, 500);
+            }, 100);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
         };
@@ -2120,9 +2113,8 @@
                     }
                   }
 
-                  // Only retry on pause for non-iOS to avoid buffering loops
-                  // NEVER auto-retry on iOS - causes infinite buffering loop
-                  if (!isIOS && window.YT && e.data === window.YT.PlayerState.PAUSED) {
+                  // Auto-retry on pause to keep video playing
+                  if (window.YT && e.data === window.YT.PlayerState.PAUSED) {
                     if (ytPlayer && ytPlayer.getPlayerState) {
                       const state = ytPlayer.getPlayerState();
                       const duration = ytPlayer.getDuration();
