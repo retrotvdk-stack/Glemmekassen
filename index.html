@@ -968,6 +968,22 @@
         display: block !important;
         visibility: visible !important;
       }
+
+      /* Coffee button - always visible on mobile */
+      .coffee-link {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        margin: 20px auto;
+        max-width: 300px;
+      }
+
+      .tv-guide.collapsed+.coffee-link {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
+      }
     }
 
     /* iPhone and smaller devices - just scale TV smaller */
@@ -1741,7 +1757,8 @@
 
         // Only retry on pause for non-iOS to avoid buffering loops
         videoElement.onpause = () => {
-          if (!videoElement.ended && !shouldStayMuted) {
+          // NEVER auto-retry on iOS - causes infinite buffering loop
+          if (!videoElement.ended && !isIOS) {
             setTimeout(() => {
               videoElement.play().catch(() => { });
             }, 100);
@@ -1874,7 +1891,8 @@
             dmPlayer.on('paused', () => {
               if (currentLoad !== currentLoadId) return;
               dmInternalState = 2; // PAUSED
-              if (!shouldStayMuted) {
+              // NEVER auto-retry on iOS - causes infinite buffering loop
+              if (!isIOS) {
                 dmPlayer.ended.then(isEnded => {
                   if (!isEnded) {
                     setTimeout(() => {
@@ -2086,7 +2104,8 @@
                   }
 
                   // Only retry on pause for non-iOS to avoid buffering loops
-                  if (!shouldStayMuted && window.YT && e.data === window.YT.PlayerState.PAUSED) {
+                  // NEVER auto-retry on iOS - causes infinite buffering loop
+                  if (!isIOS && window.YT && e.data === window.YT.PlayerState.PAUSED) {
                     if (ytPlayer && ytPlayer.getPlayerState) {
                       const state = ytPlayer.getPlayerState();
                       const duration = ytPlayer.getDuration();
