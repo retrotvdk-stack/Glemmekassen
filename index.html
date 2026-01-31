@@ -2988,6 +2988,13 @@
         }
       }
 
+      // iOS FIX: If all videos were filtered out (e.g., all archive.org), skip this series
+      if (availableVids.length === 0) {
+        console.log(`No iOS-compatible videos in ${seriesName}, skipping...`);
+        rotateQueue(channelIndex);
+        return playNextInQueue(channelIndex);
+      }
+
       const videoId = availableVids[Math.floor(Math.random() * availableVids.length)];
 
       const wasInHistory = history.includes(videoId);
@@ -3422,16 +3429,6 @@
         audioContext.resume();
       }
 
-      // CRITICAL iOS FIX: Play a muted video element immediately in click handler
-      // This "locks in" the user gesture for all subsequent play() calls
-      if (isIOS) {
-        const unlockVideo = document.createElement('video');
-        unlockVideo.muted = true;
-        unlockVideo.playsInline = true;
-        unlockVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAAhtZGF0AAAA1m1vb3YAAABsbXZoZAAAAAAAAAAAAAAAAAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU4Ljc2LjEwMA==';
-        unlockVideo.play().catch(() => { });
-      }
-
       playClick();
       if (on) {
         if (player) {
@@ -3500,7 +3497,8 @@
     }
 
     function initializeTVPlayback() {
-      if (isIOS) startPlaybackMonitor();
+      // DISABLED on iOS - interferes with natural playback
+      // if (isIOS) startPlaybackMonitor();
       // Resume on last used channel (loaded from state)
       // current = Math.floor(Math.random() * channels.length);
 
