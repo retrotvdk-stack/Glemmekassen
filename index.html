@@ -371,7 +371,7 @@
         width: 90%;
         max-width: 500px;
         margin: 0 auto;
-        margin-top: 20px;
+        margin-top: 60px;
         /* Add spacing to avoid TV legs */
         height: auto;
         max-height: 400px;
@@ -1779,14 +1779,13 @@
 
         videoElement.onpause = () => {
           // Auto-retry to keep video playing
-          // iOS: Use longer delay to avoid infinite loop
-          if (!videoElement.ended) {
-            const retryDelay = isIOS ? 1000 : 100; // 1 second on iOS, 100ms others
+          // CRITICAL: Disable on iOS - causes infinite buffering loop
+          if (!videoElement.ended && !isIOS) {
             setTimeout(() => {
-              if (videoElement && videoElement.paused && !videoElement.ended && videoElement.readyState >= 2) {
+              if (videoElement && videoElement.paused && !videoElement.ended) {
                 videoElement.play().catch(e => console.log("Pause-retry:", e));
               }
-            }, retryDelay);
+            }, 100);
           }
           if (onStateChangeCb) onStateChangeCb({ data: 2 }); // 2 = PAUSED
         };
@@ -2947,13 +2946,8 @@
       let availableVids = vids.filter(vid => !history.includes(vid) && !recentlyPlayed.includes(vid));
 
       // iOS FIX: Exclude archive.org videos on iOS - they don't work reliably
-      // BUT: If series is very small (1-2 videos), keep at least one video even if it's archive.org
       if (isIOS) {
-        const filtered = availableVids.filter(vid => !vid.includes('archive.org'));
-        // Only use filtered list if it leaves us with at least one video
-        if (filtered.length > 0 || vids.length >= 3) {
-          availableVids = filtered;
-        }
+        availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
       }
 
       // If no videos available due to series-specific history, we might be at the end of a series cycle.
@@ -2996,12 +2990,10 @@
 
       // iOS FIX: If all videos were filtered out (e.g., all archive.org), skip this series
       if (availableVids.length === 0) {
-        console.log(`iOS: No compatible videos in ${seriesName}, rotating to next series...`);
+        console.log(`No iOS-compatible videos in ${seriesName}, skipping...`);
         rotateQueue(channelIndex);
         return playNextInQueue(channelIndex);
       }
-
-      console.log(`iOS: Playing from ${seriesName}, ${availableVids.length} videos available`);
 
       const videoId = availableVids[Math.floor(Math.random() * availableVids.length)];
 
@@ -3361,7 +3353,7 @@
         // DISABLE for iframe players - we can't check status and it causes stuttering
         if (playerType === 'iframe') return;
 
-        // iOS: Check if stuck but with longer timeout and better conditions
+        // "Triple-Trigger" check: if TV is on but not playing for > 2s, force a play call sequence
         if (!playbackState.isPlayingAd && !playbackState.isStatic) {
           const now = Date.now();
           const lastActivity = playbackState.lastActivity || now;
@@ -3375,14 +3367,12 @@
             // 2 (paused), -1 (unstarted/buffering)
             if (dmInternalState === 2 || dmInternalState === -1) isStuck = true;
           } else if (playerType === 'video' && videoElement) {
-            if (videoElement.paused && videoElement.readyState >= 2) isStuck = true;
+            if (videoElement.paused) isStuck = true;
           }
 
           if (isStuck) {
-            // iOS: Wait longer before forcing play to avoid interference
-            const timeout = isIOS ? 5000 : 2500; // 5 seconds on iOS
-            if (now - lastActivity > timeout) {
-              console.log("Playback monitor: Player stuck, forcing play...");
+            if (now - lastActivity > 2500) { // Check every 2.5s
+              console.log("iOS Triple-Trigger: Player stuck, forcing play sequence...");
 
               const forcePlay = () => {
                 if (player && player.mute) player.mute();
@@ -3507,8 +3497,8 @@
     }
 
     function initializeTVPlayback() {
-      // Re-enabled with better conditions
-      if (isIOS) startPlaybackMonitor();
+      // DISABLED on iOS - interferes with natural playback
+      // if (isIOS) startPlaybackMonitor();
       // Resume on last used channel (loaded from state)
       // current = Math.floor(Math.random() * channels.length);
 
