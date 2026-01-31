@@ -852,80 +852,6 @@
         justify-content: flex-start;
         gap: 15px;
       }
-
-      #main-layout {
-        flex-direction: column;
-      }
-
-      .tv {
-        transform: scale(1.0);
-        transform-origin: center;
-        margin: 0;
-      }
-
-      #tv.expanded {
-        transform: scale(1.0);
-      }
-
-      /* Horizontal guide below TV */
-      .tv-guide {
-        position: relative;
-        width: 100%;
-        max-width: 95vw;
-        height: 180px;
-        transform: none;
-        right: auto;
-        top: auto;
-        flex-direction: column;
-        display: flex;
-        visibility: visible;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .tv-guide.collapsed {
-        height: 50px;
-        overflow: hidden;
-      }
-
-      .guide-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        border-bottom: 2px solid #333;
-        margin-bottom: 10px;
-      }
-
-      .guide-header h2 {
-        font-size: 18px;
-        margin: 0;
-      }
-
-      .guide-toggle {
-        display: none;
-        /* Hide collapse button on mobile - guide should always be visible */
-      }
-
-
-      #guide-content {
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
-        gap: 15px;
-        padding: 0 10px 10px 10px;
-        height: auto;
-        min-height: 100px;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .channel-block {
-        min-width: 200px;
-        flex-shrink: 0;
-        display: block;
-        visibility: visible;
-      }
     }
 
     /* Mobile/iOS - Vertical layout with guide BELOW TV */
@@ -963,6 +889,7 @@
         min-height: 200px;
         padding: 15px;
         display: flex;
+        flex-direction: column;
         visibility: visible;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -979,6 +906,7 @@
       .guide-sidebar {
         position: static !important;
         /* Keep sidebar in flow on mobile */
+        width: 100%;
       }
 
       .guide-sidebar:has(.tv-guide.collapsed) {
@@ -1021,6 +949,11 @@
       .channel-block {
         width: 100%;
         margin-bottom: 15px;
+      }
+
+      .program-slot {
+        display: block;
+        /* Make sure program slots are visible */
       }
     }
 
