@@ -1815,6 +1815,13 @@
         // Set src AFTER listeners are attached to catch immediate errors
         videoElement.src = transformOneDriveUrl(videoId);
 
+        // CRITICAL iOS FIX: Explicitly call play() - autoplay attribute alone is not enough on iOS
+        // The play() call must happen to trigger autoplay even when autoplay=true
+        videoElement.play().catch(error => {
+          console.log('Initial video play blocked:', error);
+          // If autoplay is blocked, the playback monitor will retry
+        });
+
       } else if (isDailymotion) {
         // === DAILYMOTION PLAYER ===
         if (!window.dailymotion) {
@@ -2096,6 +2103,13 @@
 
                 playbackState.consecutiveErrorCount = 0;
                 player = createPlayerWrapper();
+
+                // CRITICAL iOS FIX: Explicitly call playVideo on iOS
+                // Even with autoplay=1, iOS needs explicit play() to start
+                if (e.target.playVideo) {
+                  e.target.playVideo();
+                }
+
                 if (ctx.onReadyCb) ctx.onReadyCb({ target: player });
               },
               onStateChange: (e) => {
