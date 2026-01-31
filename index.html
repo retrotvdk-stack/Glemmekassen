@@ -2064,17 +2064,6 @@
 
           // Reuse existing YouTube player
           ytPlayer.loadVideoById({ videoId: cleanId, startSeconds: Math.floor(startAt) });
-
-          // iOS CRITICAL: loadVideoById doesn't autoplay on iOS - must call playVideo explicitly
-          if (isIOS) {
-            setTimeout(() => {
-              if (ytPlayer && currentLoad === currentLoadId) {
-                ytPlayer.playVideo();
-                console.log('iOS: Forced playVideo after loadVideoById');
-              }
-            }, 300);
-          }
-
           if (onReadyCb) {
             if (currentLoad === currentLoadId) onReadyCb({ target: player });
           }
@@ -3174,21 +3163,10 @@
               return;
             }
 
-            // iOS-specific: Force playback after static (autoplay may fail on iOS)
+            // Force playback for all platforms
             if (e.target.playVideo) {
               try {
                 e.target.playVideo();
-                console.log('Called playVideo in onReady');
-
-                // iOS CRITICAL: Force play again after delay to ensure it sticks
-                if (isIOS) {
-                  setTimeout(() => {
-                    if (e.target.playVideo && loadId === currentLoadId) {
-                      e.target.playVideo();
-                      console.log('iOS: Forced play after delay');
-                    }
-                  }, 500);
-                }
               } catch (err) {
                 console.log('Force play error:', err);
               }
