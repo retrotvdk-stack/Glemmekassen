@@ -3518,7 +3518,10 @@
       renderTVGuide();
 
       // Start with random video at random time like all other channels
-      loadChannel(true, false, false, false, false);
+      // CRITICAL iOS FIX: Skip static animation on iOS to maintain user gesture context
+      // iOS requires video.play() to be called within user gesture - setTimeout breaks this
+      const skipStaticOnIOS = isIOS;
+      loadChannel(true, false, false, skipStaticOnIOS, false);
     }
 
     function chUp() {
@@ -3547,7 +3550,8 @@
         saveState();
         current = (current + 1) % channels.length;
         renderTVGuide(); // Update guide to show new channel
-        loadChannel(false, true, false);
+        // iOS FIX: Skip static to preserve user gesture context
+        loadChannel(false, true, false, isIOS);
       }
     }
 
@@ -3577,7 +3581,8 @@
         saveState();
         current = (current - 1 + channels.length) % channels.length;
         renderTVGuide(); // Update guide to show new channel
-        loadChannel(false, true, false);
+        // iOS FIX: Skip static to preserve user gesture context
+        loadChannel(false, true, false, isIOS);
       }
     }
 
