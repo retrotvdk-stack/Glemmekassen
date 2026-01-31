@@ -3481,7 +3481,9 @@
       } else {
         // Power on
         on = true;
-        muted = false;
+        // CRITICAL iOS FIX: Stay muted on iOS - required for autoplay
+        // iOS will NEVER autoplay unmuted videos, no matter what
+        muted = isIOS ? true : false;
         initializeTVPlayback();
       }
     }
