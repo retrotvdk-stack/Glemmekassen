@@ -2064,6 +2064,17 @@
 
           // Reuse existing YouTube player
           ytPlayer.loadVideoById({ videoId: cleanId, startSeconds: Math.floor(startAt) });
+
+          // iOS CRITICAL: loadVideoById doesn't autoplay on iOS - must call playVideo explicitly
+          if (isIOS) {
+            setTimeout(() => {
+              if (ytPlayer && currentLoad === currentLoadId) {
+                ytPlayer.playVideo();
+                console.log('iOS: Forced playVideo after loadVideoById');
+              }
+            }, 300);
+          }
+
           if (onReadyCb) {
             if (currentLoad === currentLoadId) onReadyCb({ target: player });
           }
