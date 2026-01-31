@@ -2241,14 +2241,17 @@
           }
         };
       } else if (playerType === 'dailymotion') {
-        // Start polling for time/duration updates
-        if (dmUpdateInterval) clearInterval(dmUpdateInterval);
-        dmUpdateInterval = setInterval(() => {
-          if (dmPlayer) {
-            dmPlayer.currentTime.then(t => { dmCachedTime = t; });
-            dmPlayer.duration.then(d => { dmCachedDuration = d; });
-          }
-        }, 200); // Update every 200ms
+        // Polling for position updates (DM SDK doesn't have a perfect progress event stream)
+        // DISABLED ON iOS to prevent stuttering
+        if (!isIOS) {
+          if (dmUpdateInterval) clearInterval(dmUpdateInterval);
+          dmUpdateInterval = setInterval(() => {
+            if (dmPlayer) {
+              dmPlayer.currentTime.then(t => { dmCachedTime = t; });
+              dmPlayer.duration.then(d => { dmCachedDuration = d; });
+            }
+          }, 200); // Update every 200ms
+        }
 
         return {
           _isDailymotion: true,
@@ -3322,6 +3325,9 @@
     let playbackMonitorInterval = null;
 
     function startPlaybackMonitor() {
+      // DISABLED ON iOS - causes constant interference/stuttering
+      if (isIOS) return;
+
       if (playbackMonitorInterval) return;
       playbackMonitorInterval = setInterval(() => {
         if (!on || !player || !isIOS) return;
