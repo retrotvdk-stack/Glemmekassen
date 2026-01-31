@@ -1778,8 +1778,9 @@
         };
 
         videoElement.onpause = () => {
-          // Auto-retry to keep video playing (iOS often pauses for buffering)
-          if (!videoElement.ended) {
+          // Auto-retry to keep video playing
+          // CRITICAL: Disable on iOS - causes infinite buffering loop
+          if (!videoElement.ended && !isIOS) {
             setTimeout(() => {
               if (videoElement && videoElement.paused && !videoElement.ended) {
                 videoElement.play().catch(e => console.log("Pause-retry:", e));
@@ -3421,6 +3422,16 @@
         audioContext.resume();
       }
 
+      // CRITICAL iOS FIX: Play a muted video element immediately in click handler
+      // This "locks in" the user gesture for all subsequent play() calls
+      if (isIOS) {
+        const unlockVideo = document.createElement('video');
+        unlockVideo.muted = true;
+        unlockVideo.playsInline = true;
+        unlockVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAAhtZGF0AAAA1m1vb3YAAABsbXZoZAAAAAAAAAAAAAAAAAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU4Ljc2LjEwMA==';
+        unlockVideo.play().catch(() => { });
+      }
+
       playClick();
       if (on) {
         if (player) {
@@ -3520,10 +3531,7 @@
       renderTVGuide();
 
       // Start with random video at random time like all other channels
-      // CRITICAL iOS FIX: Skip static animation on iOS to maintain user gesture context
-      // iOS requires video.play() to be called within user gesture - setTimeout breaks this
-      const skipStaticOnIOS = isIOS;
-      loadChannel(true, false, false, skipStaticOnIOS, false);
+      loadChannel(true, false, false, false, false);
     }
 
     function chUp() {
@@ -3552,8 +3560,7 @@
         saveState();
         current = (current + 1) % channels.length;
         renderTVGuide(); // Update guide to show new channel
-        // iOS FIX: Skip static to preserve user gesture context
-        loadChannel(false, true, false, isIOS);
+        loadChannel(false, true, false);
       }
     }
 
@@ -3583,8 +3590,7 @@
         saveState();
         current = (current - 1 + channels.length) % channels.length;
         renderTVGuide(); // Update guide to show new channel
-        // iOS FIX: Skip static to preserve user gesture context
-        loadChannel(false, true, false, isIOS);
+        loadChannel(false, true, false);
       }
     }
 
