@@ -1778,9 +1778,8 @@
         };
 
         videoElement.onpause = () => {
-          // Auto-retry to keep video playing
-          // CRITICAL: Disable on iOS - causes infinite buffering loop
-          if (!videoElement.ended && !isIOS) {
+          // Auto-retry to keep video playing (iOS often pauses for buffering)
+          if (!videoElement.ended) {
             setTimeout(() => {
               if (videoElement && videoElement.paused && !videoElement.ended) {
                 videoElement.play().catch(e => console.log("Pause-retry:", e));
@@ -3497,8 +3496,7 @@
     }
 
     function initializeTVPlayback() {
-      // DISABLED on iOS - interferes with natural playback
-      // if (isIOS) startPlaybackMonitor();
+      if (isIOS) startPlaybackMonitor();
       // Resume on last used channel (loaded from state)
       // current = Math.floor(Math.random() * channels.length);
 
