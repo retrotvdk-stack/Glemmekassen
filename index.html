@@ -2946,8 +2946,13 @@
       let availableVids = vids.filter(vid => !history.includes(vid) && !recentlyPlayed.includes(vid));
 
       // iOS FIX: Exclude archive.org videos on iOS - they don't work reliably
+      // BUT: If series is very small (1-2 videos), keep at least one video even if it's archive.org
       if (isIOS) {
-        availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
+        const filtered = availableVids.filter(vid => !vid.includes('archive.org'));
+        // Only use filtered list if it leaves us with at least one video
+        if (filtered.length > 0 || vids.length >= 3) {
+          availableVids = filtered;
+        }
       }
 
       // If no videos available due to series-specific history, we might be at the end of a series cycle.
@@ -2990,10 +2995,12 @@
 
       // iOS FIX: If all videos were filtered out (e.g., all archive.org), skip this series
       if (availableVids.length === 0) {
-        console.log(`No iOS-compatible videos in ${seriesName}, skipping...`);
+        console.log(`iOS: No compatible videos in ${seriesName}, rotating to next series...`);
         rotateQueue(channelIndex);
         return playNextInQueue(channelIndex);
       }
+
+      console.log(`iOS: Playing from ${seriesName}, ${availableVids.length} videos available`);
 
       const videoId = availableVids[Math.floor(Math.random() * availableVids.length)];
 
