@@ -2301,10 +2301,8 @@
         return {
           _isIframe: true,
           playVideo: () => {
-            // Reload iframe to restart?
-            const container = document.getElementById('player');
-            const iframe = container.querySelector('iframe');
-            if (iframe) iframe.src = iframe.src;
+            // Do not reload iframe - causes infinite loop on iOS
+            // Autoplay is handled by URL parameters
           },
           pauseVideo: () => { },
           mute: () => { },
