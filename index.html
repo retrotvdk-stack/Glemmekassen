@@ -2928,6 +2928,11 @@
       // First filter: exclude videos in this series' played history AND recently played globally
       let availableVids = vids.filter(vid => !history.includes(vid) && !recentlyPlayed.includes(vid));
 
+      // iOS FIX: Exclude archive.org videos on iOS - they don't work reliably
+      if (isIOS) {
+        availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
+      }
+
       // If no videos available due to series-specific history, we might be at the end of a series cycle.
       if (availableVids.length === 0) {
         // RESET CYCLE: All episodes in this series have been watched at least once!
@@ -2936,10 +2941,18 @@
         // If the series is tiny (e.g. 1 video), just play it again.
         if (vids.length < 3) {
           availableVids = vids;
+          // iOS FIX: Still filter out archive.org even for small series
+          if (isIOS) {
+            availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
+          }
         } else {
           // Smart Selection for Reset:
           // Candidates are videos NOT in the global recent buffer (last 30 unique plays)
           let candidates = vids.filter(v => !recentlyPlayed.includes(v));
+          // iOS FIX: Filter archive.org
+          if (isIOS) {
+            candidates = candidates.filter(vid => !vid.includes('archive.org'));
+          }
 
           if (candidates.length === 0) {
             // If ALL videos in this series are in the last 30 plays (very small series), 
