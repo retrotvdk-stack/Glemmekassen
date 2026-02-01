@@ -15,17 +15,15 @@
     body {
       margin: 0;
       padding: 0;
+      overflow-y: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       /* Retro Wallpaper Pattern */
       background-color: #f0e6d2;
       background-image:
         linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .5) 50%);
       background-size: 50px 50px;
-      height: 100vh;
-      display: flex;
-      flex-direction: row;
-      /* Desktop: side by side */
-      justify-content: center;
-      align-items: center;
       font-family: 'Courier New', monospace;
     }
 
@@ -89,7 +87,15 @@
       height: 100%;
       background: #050505;
       position: relative;
-      /* subtle CRT curve effect could go here but keeping it simple for video visibility */
+    }
+
+    .filter-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
 
     #staticVideo,
@@ -322,13 +328,31 @@
       /* Desktop: side by side */
       align-items: center;
       justify-content: center;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      flex: 1;
       box-sizing: border-box;
       gap: 60px;
       /* Gap to keep guide away from TV */
-      overflow: hidden;
+      padding: 20px;
       transition: gap 0.3s ease;
+    }
+
+    .footer-disclaimer {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 11px;
+      color: #7d6c5a;
+      padding: 15px 20px;
+      margin: 30px 0 0 0;
+      background-color: #f0e6d2;
+      border-top: 2px solid #d3d3d3;
+      transition: margin 0.3s ease;
+    }
+
+    /* Move footer down when guide is collapsed to avoid overlapping TV legs */
+    body:has(.tv-guide.collapsed) .footer-disclaimer {
+      margin-top: 100px;
     }
 
     #main-layout.guide-collapsed {
@@ -619,8 +643,14 @@
 
     .switch input {
       opacity: 0;
-      width: 0;
-      height: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
+      cursor: pointer;
+      z-index: 2;
     }
 
     .slider {
@@ -707,7 +737,7 @@
     /* Position sidebar absolutely when guide is collapsed so TV can center */
     .guide-sidebar:has(.tv-guide.collapsed) {
       position: absolute;
-      right: -50px;
+      right: -70px;
       /* Place at very edge of screen, slightly beyond */
       top: 50%;
       transform: translateY(-50%);
@@ -861,10 +891,10 @@
     @media screen and (max-width: 1024px) {
       body {
         padding: 10px;
+      }
+
+      #main-layout {
         flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 15px;
       }
     }
 
@@ -1007,6 +1037,12 @@
         pointer-events: auto !important;
         transform: none !important;
       }
+
+      /* Disclaimer on mobile */
+      .disclaimer {
+        order: 999;
+        margin-top: 20px;
+      }
     }
 
     /* iPhone and smaller devices - just scale TV smaller */
@@ -1034,9 +1070,191 @@
         /* No expand on mobile */
       }
     }
+
+    /* Fullscreen Controls */
+    /* Fullscreen Controls */
+    /* Fullscreen Controls */
+    .fs-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4a3b32;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 2px solid #3e2723;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.5);
+      width: auto;
+      min-width: 650px;
+    }
+
+    .fs-controls.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .fs-controls .control-row {
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .fs-controls button {
+      flex: 1;
+      height: 38px;
+      background: #222;
+      border: none;
+      border-radius: 4px;
+      color: #aaa;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #000;
+      transition: transform 0.1s, box-shadow 0.1s;
+      font-size: 10px;
+      text-transform: uppercase;
+      border-top: 1px solid #444;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    .fs-controls button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #000;
+    }
+
+    .fs-controls button.power-btn {
+      background: #800;
+      color: #ffcccc;
+      border-top: 1px solid #a00;
+      flex: 0.8;
+    }
+
+    .fs-controls .fs-exit-btn {
+      background: #5d1010;
+      color: #ffcccc;
+      border-top: 1px solid #800;
+      flex: 0.8;
+    }
+
+    .fs-controls .toggle-label {
+      font-size: 8px;
+      color: #ccc;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .fs-controls .brightness-label {
+      font-size: 8px;
+      color: #ccc;
+      text-transform: uppercase;
+      font-weight: bold;
+      min-width: 35px;
+    }
+
+    .fs-controls .setting-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    /* Error 153 Overlay */
+    #error153Overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      display: none;
+      /* Shown via JS */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    .error-box {
+      background: #800;
+      border: 4px double #ffcccc;
+      padding: 25px;
+      max-width: 450px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+      position: relative;
+    }
+
+    .error-box h2 {
+      margin-top: 0;
+      color: #ffcccc;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 2px solid #ffcccc;
+      padding-bottom: 10px;
+    }
+
+    .error-box p {
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .error-box .code-snippet {
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      margin: 15px 0;
+      font-size: 13px;
+      border: 1px solid #333;
+    }
+
+    .error-box .close-btn {
+      margin-top: 15px;
+      background: #3e2723;
+      color: #deb887;
+      border: 2px solid #3e2723;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .error-box .close-btn:hover {
+      background: #4e342e;
+      color: #fff;
+    }
+
+    /* Volume in Fullscreen - Move to Top */
+    .screen:fullscreen .volume-bar-container,
+    .screen:-webkit-full-screen .volume-bar-container,
+    .screen:-moz-full-screen .volume-bar-container,
+    .screen:-ms-fullscreen .volume-bar-container {
+      top: 40px;
+      bottom: auto;
+    }
+
+    .screen:fullscreen .volume-number,
+    .screen:-webkit-full-screen .volume-number,
+    .screen:-moz-full-screen .volume-number,
+    .screen:-ms-fullscreen .volume-number {
+      top: 55px;
+      bottom: auto;
+      font-size: 24px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
   </style>
-
-
 </head>
 
 <body>
@@ -1065,17 +1283,61 @@
       <div class="monitor-encasement">
         <div class="screen-bezel">
           <div class="screen">
-            <video id="staticVideo" loop muted playsinline webkit-playsinline
-              src="https://cdn.pixabay.com/video/2018/04/20/15708-266043570_large.mp4"></video>
-            <video id="powerOffVideo" muted playsinline webkit-playsinline
-              src="https://cdn.pixabay.com/video/2019/09/25/27228-362518551_large.mp4"></video>
-            <div id="player"></div>
+            <div id="error153Overlay">
+              <div class="error-box">
+                <h2>System Fejl 153</h2>
+                <p>YouTube blokerer afspilning via <strong>file://</strong> protokollen.</p>
+                <p>Du skal køre appen gennem en <strong>lokal server</strong> for at se videoerne.</p>
+                <div class="code-snippet">
+                  1. Dobbeltklik på: <strong>start_tv.command</strong><br>
+                  2. Gå til: <strong>http://localhost:8000</strong>
+                </div>
+                <button class="close-btn"
+                  onclick="document.getElementById('error153Overlay').style.display='none'">Skjul advarsel</button>
+              </div>
+            </div>
+            <div class="filter-layer" id="filterLayer">
+              <video id="staticVideo" loop muted playsinline webkit-playsinline
+                src="https://cdn.pixabay.com/video/2018/04/20/15708-266043570_large.mp4"></video>
+              <video id="powerOffVideo" muted playsinline webkit-playsinline
+                src="https://cdn.pixabay.com/video/2019/09/25/27228-362518551_large.mp4"></video>
+              <div id="player"></div>
+            </div>
             <div class="label" id="label">TV slukket</div>
             <div class="mute-icon" id="muteIcon">MUTE</div>
             <div class="volume-bar-container" id="volumeContainer">
               <div class="volume-bar" id="volumeBar"></div>
             </div>
             <div class="volume-number" id="volumeNumber">50</div>
+
+            <!-- Fullscreen Controls Overlay (Auto-hide) -->
+            <div class="fs-controls" id="fsControls">
+              <!-- Primary Buttons Row -->
+              <div class="control-row">
+                <button class="power-btn" onclick="power()" aria-label="Power">POWER</button>
+                <button onclick="chDown()" aria-label="CH-">CH -</button>
+                <button onclick="chUp()" aria-label="CH+">CH +</button>
+                <button onclick="volDown()" aria-label="VOL-">VOL -</button>
+                <button onclick="volUp()" aria-label="VOL+">VOL +</button>
+                <button onclick="muteToggle()" aria-label="Mute">MUTE</button>
+                <button onclick="toggleFullscreen()" aria-label="Exit Fullscreen" class="fs-exit-btn">EXIT FS</button>
+              </div>
+
+              <!-- Settings Row -->
+              <div class="control-row" style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px;">
+                <div class="setting-group">
+                  <div class="brightness-label">Farve</div>
+                  <input type="range" id="fsSaturationSlider" min="0" max="200" value="100" class="retro-slider"
+                    oninput="setColor(this.value); document.getElementById('saturationSlider').value = this.value;">
+                </div>
+
+                <div class="setting-group">
+                  <div class="brightness-label">Lys</div>
+                  <input type="range" id="fsBrightnessSlider" min="20" max="150" value="100" class="retro-slider"
+                    oninput="setBrightness(this.value); document.getElementById('brightnessSlider').value = this.value;">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1152,6 +1414,17 @@
     </div>
 
   </div>
+
+
+  <script>
+    // Force disclaimer to bottom of page
+    document.addEventListener('DOMContentLoaded', () => {
+      const footer = document.querySelector('.footer-container');
+      if (footer) {
+        document.body.appendChild(footer);
+      }
+    });
+  </script>
 
   <script>
     // Setup OSD Hover Logic
@@ -1258,7 +1531,7 @@
         }
       },
       {
-        name: "RetroVision Blandet",
+        name: "Blandet",
         series: {
           "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
           "Hamtaro": [
@@ -1286,7 +1559,7 @@
         }
       },
       {
-        name: "RetroVision Film",
+        name: "Film",
         series: {
           "Casper møder Wendy": ["DJqOCRJX3F8"],
           "Morten på nye skoleeventyr": ["AXu04cQsztM"],
@@ -2090,23 +2363,30 @@
           }
         } else {
           // Create new YouTube player
+          const playerVars = {
+            playsinline: 1,
+            autoplay: 1,
+            controls: 0,
+            rel: 0,
+            start: Math.floor(startAt),
+            enablejsapi: 1,
+            mute: 1,
+            modestbranding: 1,
+            iv_load_policy: 3,
+            fs: 0,
+            disablekb: 1,
+            cc_load_policy: 0
+          };
+
+          // Only add origin if NOT on file protocol
+          if (window.location.protocol !== 'file:') {
+            playerVars.origin = window.location.origin;
+          }
+
           ytPlayer = new window.YT.Player("player", {
             host: 'https://www.youtube.com',
             videoId: cleanId,
-            playerVars: {
-              playsinline: 1,
-              autoplay: 1,
-              controls: 0,
-              rel: 0,
-              start: Math.floor(startAt),
-              enablejsapi: 1,
-              mute: 1,
-              modestbranding: 1,
-              iv_load_policy: 3,
-              fs: 0,
-              disablekb: 1,
-              cc_load_policy: 0
-            },
+            playerVars: playerVars,
             events: {
               onReady: (e) => {
                 // Force highest quality
@@ -2175,6 +2455,7 @@
                 if (playbackState.consecutiveErrorCount >= 5) {
                   if (window.location.protocol === 'file:') {
                     updateOSD("Brug en lokal server (localhost)", true);
+                    document.getElementById('error153Overlay').style.display = 'flex';
                   } else {
                     updateOSD("FOR MANGE FEJL - STOPPER", true);
                   }
@@ -2460,7 +2741,7 @@
 
     function playAdsThen(cb, isTuningIn = false, resumeSeq = null, resumeStartAt = 0) {
       const loadId = currentLoadId; // Respect the load context we're in
-      if (!adsEnabled || !["Cartoon Network", "Disney Channel", "Fox Kids", "Jetix", "Blandet Kanal"].includes(channels[current].name)) {
+      if (!adsEnabled || !["Cartoon Network", "Disney Channel", "Fox Kids", "Jetix", "Blandet"].includes(channels[current].name)) {
         cb(); return;
       }
 
@@ -3615,6 +3896,7 @@
         }
         player.setVolume(volume);
         showVolume();
+        updateOSD(`LYDSTYRKE: ${volume}%`, false);
         saveState();
       }
     }
@@ -3633,6 +3915,7 @@
         }
         player.setVolume(volume);
         showVolume();
+        updateOSD(`LYDSTYRKE: ${volume}%`, false);
         saveState();
       }
     }
@@ -3683,11 +3966,12 @@
         }
         saveState();
       }
+      updateOSD(muted ? "LYD FRA" : `LYD TIL (${volume}%)`, false);
     }
 
     function toggleFullscreen() {
       playClick();
-      const container = document.getElementById('player');
+      const container = document.querySelector('.screen');
 
       if (!document.fullscreenElement) {
         // Enter fullscreen
@@ -3893,6 +4177,45 @@
       }
     }
 
+
+    // Fullscreen Controls Auto-Hide Logic
+    let fsControlsTimeout;
+    const fsControls = document.getElementById('fsControls');
+    const screenArea = document.querySelector('.screen');
+
+    function showFsControls() {
+      if (!document.fullscreenElement) return;
+
+      // Synchronize fullscreen controls with current state
+      const fsSaturationSlider = document.getElementById('fsSaturationSlider');
+      const fsBrightnessSlider = document.getElementById('fsBrightnessSlider');
+
+      if (fsSaturationSlider) fsSaturationSlider.value = saturation;
+      if (fsBrightnessSlider) fsBrightnessSlider.value = brightness;
+
+      fsControls.classList.add('visible');
+
+      // Clear existing timeout
+      if (fsControlsTimeout) clearTimeout(fsControlsTimeout);
+
+      // Hide after 3 seconds of inactivity
+      fsControlsTimeout = setTimeout(() => {
+        fsControls.classList.remove('visible');
+      }, 3000);
+    }
+
+    // Monitor mouse movement on screen
+    screenArea.addEventListener('mousemove', showFsControls);
+    screenArea.addEventListener('click', showFsControls);
+    screenArea.addEventListener('touchstart', showFsControls);
+
+    // Hide controls immediately when exiting fullscreen
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        fsControls.classList.remove('visible');
+      }
+    });
+
     function setColor(val) {
       if (val != saturation) {
         if (on) playSliderSound();
@@ -3907,6 +4230,12 @@
     }
 
     function toggleAds(enabled) {
+      adsEnabled = enabled;
+
+      // Synchronize all ad toggle UI elements
+      const mainToggle = document.getElementById('adToggle');
+      if (mainToggle) mainToggle.checked = adsEnabled;
+
       if (on) {
         const toggleSound = document.getElementById('toggleSound');
         if (toggleSound) {
@@ -3915,9 +4244,10 @@
           toggleSound.play().catch(() => { });
         }
       }
-      adsEnabled = enabled;
+
       saveState();
       updateAdLed();
+
       if (on) {
         updateOSD(`REKLAMER: ${adsEnabled ? 'TIL' : 'FRA'}`, true);
 
@@ -3943,14 +4273,24 @@
       }
     }
 
+    const filterLayer = document.getElementById('filterLayer');
+
     function applyFilters() {
-      screenEl.style.filter = `brightness(${brightness}%) saturate(${saturation}%)`;
+      if (filterLayer) {
+        filterLayer.style.filter = `brightness(${brightness}%) saturate(${saturation}%)`;
+      }
     }
 
     loadBans();
     loadState();
     loadGuideState();
   </script>
+
+  <p class="footer-disclaimer">
+    Videoerne afspilles direkte fra YouTube.<br>
+    Alt indhold tilhører deres respektive ophavsretshavere og vises via YouTubes indlejringsfunktion.<br>
+    Retrokyllingen har ingen tilknytning til eller ejerskab over videoerne.
+  </p>
 
 </body>
 
