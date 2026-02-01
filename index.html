@@ -3921,6 +3921,7 @@
         showVolume();
         updateOSD(`LYDSTYRKE: ${volume}%`, false);
         saveState();
+        renderTVGuide();
       }
     }
 
@@ -3940,11 +3941,12 @@
         showVolume();
         updateOSD(`LYDSTYRKE: ${volume}%`, false);
         saveState();
+        renderTVGuide();
       }
     }
 
     function muteToggle() {
-      if (on && player) {
+      if (on) {
         playClick();
         muted = !muted;
 
@@ -3953,43 +3955,31 @@
           muted = true;
         }
 
-        // Handle different player types - call mute directly on the actual player instance
-        if (playerType === 'iframe') {
-          showVolume();
-          // Iframe players need a reload to apply mute state via URL
-          loadChannel(false, false, false, true);
-        } else if (playerType === 'youtube' && ytPlayer) {
-          // YouTube player - call mute/unmute directly on ytPlayer
-          try {
-            if (muted || volume === 0) {
-              ytPlayer.mute();
-            } else {
-              ytPlayer.unMute();
+        if (player) {
+          // Handle different player types
+          if (playerType === 'iframe') {
+            // Iframe players (like Archive.org) need a reload to apply mute state via URL
+            showVolume();
+            loadChannel(false, false, false, true);
+          } else if (player.mute && player.unMute) {
+            // Use unified player wrapper methods for YT, DM, and Direct Video
+            try {
+              if (muted || volume === 0) {
+                player.mute();
+              } else {
+                player.unMute();
+              }
+            } catch (e) {
+              console.warn('Mute error:', e);
             }
-          } catch (e) {
-            console.error('YouTube mute error:', e);
+            showVolume();
           }
-          showVolume();
-        } else if (playerType === 'dailymotion' && dmPlayer) {
-          // Dailymotion player
-          try {
-            dmPlayer.setMuted(muted || volume === 0);
-          } catch (e) {
-            console.error('Dailymotion mute error:', e);
-          }
-          showVolume();
-        } else if (playerType === 'video' && videoElement) {
-          // Direct video element
-          videoElement.muted = muted || volume === 0;
-          showVolume();
-        } else if (player.mute && player.unMute) {
-          // Fallback to player wrapper methods
-          (muted || volume === 0) ? player.mute() : player.unMute();
-          showVolume();
         }
+
+        updateOSD(muted ? "LYD FRA" : `LYD TIL (${volume}%)`, false);
         saveState();
+        renderTVGuide();
       }
-      updateOSD(muted ? "LYD FRA" : `LYD TIL (${volume}%)`, false);
     }
 
     function toggleFullscreen() {
