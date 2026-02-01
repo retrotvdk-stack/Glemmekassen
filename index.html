@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Powered by Retrokyllingen.dk -->
 <html lang="da">
 
 <head>
@@ -9,6 +10,59 @@
   <title>Retro Cartoon TV</title>
 
   <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  <script>
+    window.__onGCastApiAvailable = function (isAvailable) {
+      console.log("Google Cast API Available:", isAvailable);
+      if (isAvailable) {
+        initializeCastApi();
+      }
+    };
+
+    function initializeCastApi() {
+      console.log("Initializing Cast API...");
+      try {
+        cast.framework.CastContext.getInstance().setOptions({
+          receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+          autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+        });
+        console.log("Cast API Initialized successfully.");
+      } catch (e) {
+        console.error("Cast initialization error:", e);
+      }
+    }
+
+    function requestCastSession() {
+      // 1. Check protocol
+      if (window.location.protocol === 'file:') {
+        if (typeof updateOSD === 'function') updateOSD("VIRKER IKKE PÅ FILE://", true);
+        const overlay = document.getElementById('error153Overlay');
+        if (overlay) overlay.style.display = 'flex';
+        return;
+      }
+
+      // 2. Check browser support (Chrome/Edge required for native Cast SDK)
+      const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+      const isEdge = /Edg/.test(navigator.userAgent);
+      if (!isChrome && !isEdge) {
+        if (typeof updateOSD === 'function') updateOSD("BRUG CHROME ELLER EDGE", false);
+        return;
+      }
+
+      try {
+        const context = cast.framework.CastContext.getInstance();
+        if (context) {
+          context.requestSession();
+        } else {
+          throw new Error("Cast Context not found");
+        }
+      } catch (e) {
+        console.warn("Chromecast is not available or could not be triggered:", e);
+        if (typeof updateOSD === 'function') {
+          updateOSD("CHROMECAST IKKE KLAR", false);
+        }
+      }
+    }
+  </script>
   <!-- Google Cast SDK -->
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
@@ -767,19 +821,28 @@
       /* Lower than TV so it doesn't overlap */
     }
 
-    .coffee-link {
-      text-decoration: none;
-      width: 100%;
-      max-width: 300px;
-      transition: transform 0.2s ease, opacity 0.3s ease;
-      display: block;
-    }
-
-    /* Hide button when tv-guide is collapsed */
-    .tv-guide.collapsed+.coffee-link {
+    /* Hide container when tv-guide is collapsed (Desktop only) */
+    .tv-guide.collapsed+.footer-buttons-container {
       opacity: 0;
       pointer-events: none;
       transform: translateY(10px);
+    }
+
+    .footer-buttons-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+      max-width: 300px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .coffee-link {
+      text-decoration: none;
+      width: 100%;
+      transition: transform 0.2s ease;
+      display: block;
     }
 
     .coffee-plate {
@@ -804,6 +867,40 @@
 
     .coffee-plate:hover {
       background: #ffdb58;
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* DOWNLOAD CODE BUTTON */
+    .download-link {
+      text-decoration: none;
+      width: 100%;
+      transition: transform 0.2s ease;
+      display: block;
+    }
+
+    .download-plate {
+      background: #1976d2;
+      color: #ffffff;
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 12px 18px;
+      border-radius: 4px;
+      border: 3px solid #0d47a1;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transform: rotate(1deg);
+    }
+
+    .download-plate:hover {
+      background: #2196f3;
       transform: rotate(0deg) scale(1.05);
       box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
     }
@@ -1000,6 +1097,27 @@
       .guide-toggle {
         display: none;
         /* Hide collapse button on mobile */
+      }
+
+      .footer-buttons-container {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        max-width: 100% !important;
+        margin: 15px auto 0 auto;
+      }
+
+      .coffee-link,
+      .download-link {
+        flex: 1;
+        max-width: 200px;
+      }
+
+      .coffee-plate,
+      .download-plate {
+        font-size: 10px !important;
+        padding: 10px 10px !important;
+        white-space: nowrap;
       }
 
       #guide-content {
@@ -1428,12 +1546,22 @@
         </div>
       </div>
 
-      <!-- Support Link -->
-      <a href="https://buymeacoffee.com/retrokyllingen.dk?new=1" target="_blank" class="coffee-link">
-        <div class="coffee-plate">
-          <span style="font-size: 18px;">☕</span> KØB MIG EN KAFFE
-        </div>
-      </a>
+      <!-- Combined Footer Buttons -->
+      <div class="footer-buttons-container">
+        <!-- Support Link -->
+        <a href="https://buymeacoffee.com/retrokyllingen.dk?new=1" target="_blank" class="coffee-link">
+          <div class="coffee-plate">
+            <span style="font-size: 18px;">☕</span> KØB MIG EN KAFFE
+          </div>
+        </a>
+
+        <!-- Download Source Button -->
+        <a href="javascript:void(0)" onclick="downloadSource()" class="download-link">
+          <div class="download-plate">
+            <span style="font-size: 18px; margin-right: 8px;">💾</span> DOWNLOAD KODE
+          </div>
+        </a>
+      </div>
     </div>
 
   </div>
@@ -4298,31 +4426,25 @@
       }
     }
 
-    // --- CHROMECAST LOGIC ---
-    window.__onGCastApiAvailable = function (isAvailable) {
-      if (isAvailable) {
-        initializeCastApi();
-      }
-    };
 
-    function initializeCastApi() {
-      try {
-        cast.framework.CastContext.getInstance().setOptions({
-          receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-          autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-        });
-      } catch (e) {
-        console.error("Cast initialization error:", e);
-      }
-    }
 
-    function requestCastSession() {
+    function downloadSource() {
       try {
-        const context = cast.framework.CastContext.getInstance();
-        context.requestSession();
+        const source = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        const blob = new Blob([source], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = `Retro_TV_Backup_${date}.html`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        updateOSD("KODE DOWNLOADET", false);
       } catch (e) {
-        console.warn("Chromecast is not available or could not be triggered.");
-        updateOSD("CHROMECAST IKKE TILGÆNGELIG", false);
+        console.error("Download error:", e);
+        updateOSD("FEJL VED DOWNLOAD", true);
       }
     }
 
@@ -4334,7 +4456,9 @@
   <p class="footer-disclaimer">
     Videoerne afspilles direkte fra YouTube.<br>
     Alt indhold tilhører deres respektive ophavsretshavere og vises via YouTubes indlejringsfunktion.<br>
-    Retrokyllingen har ingen tilknytning til eller ejerskab over videoerne.
+    Retrokyllingen har ingen tilknytning til eller ejerskab over videoerne.<br>
+    <span style="display: inline-block; margin-top: 10px; opacity: 0.7;">Powered by <a href="https://retrokyllingen.dk"
+        target="_blank" style="color: inherit; text-decoration: underline;">Retrokyllingen.dk</a></span>
   </p>
 
 </body>
