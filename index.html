@@ -8,8 +8,9 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Retro Cartoon TV</title>
 
-  <!-- 100% privacy-first analytics -->
   <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  <!-- Google Cast SDK -->
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
   <style>
     body {
@@ -1341,6 +1342,7 @@
                 <button onclick="volDown()" aria-label="VOL-">VOL -</button>
                 <button onclick="volUp()" aria-label="VOL+">VOL +</button>
                 <button onclick="muteToggle()" aria-label="Mute">MUTE</button>
+                <button onclick="requestCastSession()" id="fsCastBtn" aria-label="Chromecast">CAST</button>
                 <button onclick="toggleFullscreen()" aria-label="Exit Fullscreen" class="fs-exit-btn">EXIT FS</button>
               </div>
 
@@ -4303,6 +4305,34 @@
     function applyFilters() {
       if (filterLayer) {
         filterLayer.style.filter = `brightness(${brightness}%) saturate(${saturation}%)`;
+      }
+    }
+
+    // --- CHROMECAST LOGIC ---
+    window.__onGCastApiAvailable = function (isAvailable) {
+      if (isAvailable) {
+        initializeCastApi();
+      }
+    };
+
+    function initializeCastApi() {
+      try {
+        cast.framework.CastContext.getInstance().setOptions({
+          receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+          autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+        });
+      } catch (e) {
+        console.error("Cast initialization error:", e);
+      }
+    }
+
+    function requestCastSession() {
+      try {
+        const context = cast.framework.CastContext.getInstance();
+        context.requestSession();
+      } catch (e) {
+        console.warn("Chromecast is not available or could not be triggered.");
+        updateOSD("CHROMECAST IKKE TILGÆNGELIG", false);
       }
     }
 
