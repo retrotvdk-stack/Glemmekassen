@@ -405,6 +405,23 @@
       .guide-toggle {
         display: none !important;
       }
+
+      /* Prevent guide from ever collapsing on mobile */
+      .tv-guide.collapsed {
+        width: 100% !important;
+        padding: 15px !important;
+        position: static !important;
+      }
+
+      .tv-guide.collapsed .guide-header h2,
+      .tv-guide.collapsed #guide-content,
+      .tv-guide.collapsed #week-display {
+        display: block !important;
+      }
+
+      .tv-guide.collapsed .guide-header h2 {
+        display: block !important;
+      }
     }
 
     .guide-header {
@@ -4046,8 +4063,9 @@
     }
 
     function toggleGuide() {
-      // NEVER collapse guide on mobile - ignore toggle
-      if (window.innerWidth <= 768) return;
+      // NEVER collapse guide on mobile or iOS - absolute enforcement
+      const isActuallyMobile = window.innerWidth <= 768 || (typeof isIOS !== 'undefined' && isIOS);
+      if (isActuallyMobile) return;
 
       playClick();
       guideCollapsed = !guideCollapsed;
@@ -4070,9 +4088,9 @@
     }
 
     function loadGuideState() {
-      // NEVER collapse guide on mobile - always show it
-      const isMobileScreen = window.innerWidth <= 768;
-      if (isMobileScreen) {
+      // NEVER collapse guide on mobile or iOS - always show it
+      const isActuallyMobile = window.innerWidth <= 768 || (typeof isIOS !== 'undefined' && isIOS);
+      if (isActuallyMobile) {
         guideCollapsed = false;
         const guide = document.getElementById('tvGuide');
         const tv = document.getElementById('tv');
