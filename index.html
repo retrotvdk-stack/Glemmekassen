@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Powered by Retrokyllingen.dk -->
 <html lang="da">
 
 <head>
@@ -9,7 +8,10 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Retro Cartoon TV</title>
 
-  <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  <script type="text/javascript" id="www-widgetapi-script"
+    src="https://www.youtube.com/s/player/4e51e895/www-widgetapi.vflset/www-widgetapi.js" async=""></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script async="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
   <script>
     window.__onGCastApiAvailable = function (isAvailable) {
       console.log("Google Cast API Available:", isAvailable);
@@ -65,6 +67,8 @@
   </script>
   <!-- Google Cast SDK -->
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  <script src="//www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
+  <script src="//www.gstatic.com/eureka/clank/144/cast_sender.js"></script>
 
   <style>
     body {
@@ -1395,6 +1399,11 @@
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     }
   </style>
+  <link rel="preload" as="script" href="https://static1.dmcdn.net/playerv5/dmp.infopack.38f7d10521bffda30771.js">
+  <link rel="preload" as="script" href="https://static1.dmcdn.net/playerv5/dmp.photon_vendor.4508c08b2e25df3965bc.js">
+  <link rel="preload" as="script" href="https://static1.dmcdn.net/playerv5/dmp.photon_boot.e224859e81f0c56c30ec.js">
+  <link rel="preload" as="script" href="https://static1.dmcdn.net/playerv5/dmp.photon_app.44149f7b74bf966665ab.js">
+  <link rel="preload" as="script" href="https://static1.dmcdn.net/playerv5/dmp.photon_player.ba6bb73a53bbba38856b.js">
 </head>
 
 <body>
@@ -1437,13 +1446,13 @@
               </div>
             </div>
             <div class="filter-layer" id="filterLayer">
-              <video id="staticVideo" loop muted playsinline webkit-playsinline
+              <video id="staticVideo" loop="" muted="" playsinline="" webkit-playsinline="true"
                 src="https://cdn.pixabay.com/video/2018/04/20/15708-266043570_large.mp4"></video>
-              <video id="powerOffVideo" muted playsinline webkit-playsinline
+              <video id="powerOffVideo" muted="" playsinline="" webkit-playsinline="true"
                 src="https://cdn.pixabay.com/video/2019/09/25/27228-362518551_large.mp4"></video>
               <div id="player"></div>
             </div>
-            <div class="label" id="label">TV slukket</div>
+            <div class="label" id="label" style="opacity: 0;">TV slukket</div>
             <div class="mute-icon" id="muteIcon">MUTE</div>
             <div class="volume-bar-container" id="volumeContainer">
               <div class="volume-bar" id="volumeBar"></div>
@@ -1515,7 +1524,7 @@
           <div class="toggle-container">
             <span class="toggle-label">Reklamer FRA</span>
             <label class="switch">
-              <input type="checkbox" id="adToggle" checked onchange="toggleAds(this.checked)">
+              <input type="checkbox" id="adToggle" checked="" onchange="toggleAds(this.checked)">
               <span class="slider"></span>
             </label>
             <span class="toggle-label">TIL</span>
@@ -1525,7 +1534,7 @@
             <button onclick="muteToggle()" aria-label="Mute" style="flex: 0.5">MUTE</button>
             <button onclick="toggleFullscreen()" aria-label="Fullscreen" style="flex: 0.5; padding: 8px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path>
               </svg>
             </button>
           </div>
@@ -1541,9 +1550,7 @@
           <button class="guide-toggle" onclick="toggleGuide()" aria-label="Toggle guide">◀</button>
           <span id="week-display" class="week-badge"></span>
         </div>
-        <div id="guide-content">
-          <!-- Populated by JS -->
-        </div>
+        <div id="guide-content"></div>
       </div>
 
       <!-- Combined Footer Buttons -->
@@ -1621,9 +1628,12 @@
   <script>
     const channels = [
       {
-        name: "Cartoon Network",
+        name: "RK1",
         series: {
-          "Tidspatruljen": ["S3U8Fwhx2q8"],
+          "Duck Dodgers": ["https://dn710105.ca.archive.org/0/items/duck-dodgers_dansk_tale/S01E01.mp4", "https://dn710105.ca.archive.org/0/items/duck-dodgers_dansk_tale/S01E02.mp4", "https://dn710105.ca.archive.org/0/items/duck-dodgers_dansk_tale/S01E03.mp4", "https://dn710105.ca.archive.org/0/items/duck-dodgers_dansk_tale/S01E04.mp4", "https://dn710105.ca.archive.org/0/items/duck-dodgers_dansk_tale/S01E05.mp4"],
+          "X-men Evolution": ["https://ia600700.us.archive.org/15/items/x-men-evolution_202503/S02E01.mp4", "https://ia800700.us.archive.org/15/items/x-men-evolution_202503/S02E02.mp4", "https://ia600700.us.archive.org/15/items/x-men-evolution_202503/S02E03.mp4", "https://ia800700.us.archive.org/15/items/x-men-evolution_202503/S02E04.mp4", "https://ia800700.us.archive.org/15/items/x-men-evolution_202503/S02E05.mp4"],
+          "Ozzy og Drix": ["https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E01.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E02.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E03.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E04.mp4", "https://ia904502.us.archive.org/24/items/ozzy-og-drix-dansk-tale/S02E05.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E06.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E07.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E08.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E09.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E10.mp4", "https://ia804502.us.archive.org/24/items/ozzy-og-drix-dansk-tale/S02E12.mp4", "https://dn710008.ca.archive.org/0/items/ozzy-og-drix-dansk-tale/S02E13.mp4"],
+          "Gumball": ["rgzMFMuwG4U", "Mqy8yRoOQUs", "SQO_yx8JgSc", "vJVzWTljIE0", "vJVzWTljIE0", "o8_obLCFirA", "eNrBPeuHjW0", "W0jLfERwz0s", "Wxzc3TAHxLc", "8fYM3eNeX_0", "UgJ-R16WAP0", "4JlZ5H4UQ5M", "bqLFaGRUn0g", "kf1kP3kZx-E", "wYP0eIL5qjs", "82zVA5NuShA", "k4ZSFiVy8gw", "ehmQKuEC57I", "a6_gqAX9joE", "0G268GsDQFY", "zVHJHtrNtxc", "bNhJ_mFFnIA", "xAzRDrumRS0", "jey31OpIzMg", "OJhFteSbK90", "EP3R9jj9Bys", "v2YauFt2PAY", "JGr0rqbgCXU", "MwWSqLGNtRc", "sW-OgvgZq9w", "ep0UtOd4EOM", "0FPxHAHs-CM", "nocl9fXRXRA", "Cv5L_UbkvIg", "By-RYoxlB14", "uVphCkYhx9Y", "96G2vpD14lA", "3C7sS7UfdVU", "dl7KKdxnhmc", "81irljSQHQ4", "5t7zdwlBVh4", "jKcjBNYCVn8", "GBN6lMBFJRg", "WGASrCagF30", "pEGVefO_JfQ", "UQdgp-zQWfc", "ABTUQCbNx7c", "jvUijjtWuJI", "8spwZHva08s", "QD2uN2mW19o", "7v5iNodh5ZA", "bc2zK4AcQsY", "h83hdRenTM8", "l9NWAue7UyA", "iIzeg1P7KaM"],
           "Sabrina: Den animerede serie": ["SOdfs26p1oU", "ObyWPvitzMU", "I45Y4XQsKk8", "XlOqCW9vYuQ", "G--QnsGcNQ4"],
           "Juniper Lee": ["00UzN-E-MOc", "qfKVmTs374I", "Fdy3v0nuxP8", "2d1Y4emvz_Q", "cu8dJZ6-PWs", "7Hqciu7pfhA"],
           "Ed, Edd og Eddy": ["BhQnCEbksX8", "qbTaekKhnFc", "KficyJz8L4U", "UJ-gmM401mw", "9v22NRqsIt8", "xn1T8L9yU7Q", "U2ePD1yqXQc", "iKmEVvY6Z4E", "2ZdqzRgDtSI", "pLNtRtPiYcM", "hw2kaIxa--w", "iKmEVvY6Z4E", "2ZdqzRgDtSI", "cZRxPYTlbag", "udkwBO3pZ7w", "tTiwuTPam-k", "vkod5pdBupQ", "H7Toz0JmY9Y", "h7x6kQ9tzsA", "MoF0fex3iHA"],
@@ -1634,19 +1644,15 @@
           "Chowder": ["YXAKI8vQ9MQ", "dODLuN8n4hg"],
           "Johnny Bravo": ["SKlC4AQc5xA", "Q70N3uSbTVM", "ByFl6PRmP-I", "vqAgvFSKEjs", "y_rsJZIzQB4", "yNMDtj1nNpM", "T0Q9q427DhY", "B4otvbWvjTU", "qFwOM538wWg", "l6R-da2-XKc"],
           "Scooby Doo": ["A9JEbTvmF24", "Tt7Bqt1m1wY", "jUmOr7fZZ0o", "faud2kc-a7I"],
-          "Ben 10": ["3J5IUPOTK7U"],
+          "Ben 10": ["3J5IUPOTK7U", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E01.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E02.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E03.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E04.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E05.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E06.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E07.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E08.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E09.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E10.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E11.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E12.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S01E13.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E01.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E02.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E03.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E04.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E05.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E06.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E07.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E08.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E09.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E10.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E11.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E12.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S02E13.mp4", "https://ia800804.us.archive.org/33/items/ben-10-2003/S03E01.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E02.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E03.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E04.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E05.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E06.mp4", "https://ia600804.us.archive.org/33/items/ben-10-2003/S03E07.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E08.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E09.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E10.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E11.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E12.mp4", "https://dn720704.ca.archive.org/0/items/ben-10-2003/S03E13.mp4"],
           "Looney Tunes": ["lQvM8S-HHgA"],
           "Batman: Den tapre og modige": ["Cy6xkqfdSbI"],
           "Får i Storbyen": ["oEqPbg3wPdk"],
-          "Foster’s hjem for fantasivenner": ["X9GjZDawyL4", "giIOFnwLVzM", "813YzofZh_M", "56nP95hRt2c", "wipx_2OnvCo", "F-lM3W4pYkk", "TrWErP_UObc", "D3hLFK31iw8", "Ys2OUpvcXCM"],
-          "Kodenavn: Naboens børn": ["cspDSLHGv_M", "iaxoHtDXWig"],
+          "Foster's hjem for fantasivenner": ["X9GjZDawyL4", "giIOFnwLVzM", "813YzofZh_M", "56nP95hRt2c", "wipx_2OnvCo", "F-lM3W4pYkk", "TrWErP_UObc", "D3hLFK31iw8", "Ys2OUpvcXCM"],
+          "Kodenavn: Naboens børn": ["https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E01.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E02.DK.ENG.PDTV.x264-BONDE.mp4", "https://ia600208.us.archive.org/26/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E03.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E04.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E05.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E06.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E07.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E08.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E10.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E11.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E11.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E12.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S01E13.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E01.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E02.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E03.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E04.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://ia800208.us.archive.org/26/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E06.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E07.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E08.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E09.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E10.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E11.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E12.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S02E13.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E01.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E02.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E03.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E04.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://ia800208.us.archive.org/26/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E05.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E07.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E08.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E09.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E09.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E10.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E11.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E12.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S03E13.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E01.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E02.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E03.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E04.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E06.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E07.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E08.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E09.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E10.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S04E13.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E01.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E02.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E03.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E04.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E05.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E06.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E07.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E09.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E10.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E11.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E12.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S05E13.DK.ENG.PDTV.x264-BONDE%20.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E01.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E02.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E03.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E04.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E05.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E06.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E07.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E08.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E10.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E11.DK.ENG.PDTV.x264-BONDE.mp4", "https://dn721609.ca.archive.org/0/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E12.DK.ENG.PDTV.x264-BONDE.mp4", "https://ia600208.us.archive.org/26/items/kodenvn-nboens-bor/Codename.Kids.Next.Door.S06E13.DK.ENG.PDTV.x264-BONDE.mp4"],
           "Ko og Kylling": ["k97ScATFM8U", "SeY1FpxnWm0", "ZyuyeifZazs", "ZE9X17CrpO8", "bha4HQXCVmE", "s3PB2_Ltoxg", "Rall9ncURwc", "H-hEgyUJz34", "3BR7wDUgeO8", "itzx5pvkqF8", "aY6hoJbyOZI", "frRgj11QXBE", "qy7mJR-iaA8", "b0f5GG7TW_0"],
-          "Kaptajn Rune Renlig": ["qDfB7qwtegs"],
-          "Haj og Henning": ["OsLQgXoS994"],
-          "Fedtkattene": ["Dnz8IjSTtxs"],
-          "Gunnar og Sune": ["So7BtN_F9nc"],
-          "Tag to, betal for en": ["qrP7RH2IXf8", "_esXP0K5Sk0", "qbBehMStxqA"],
-          "Dexter’s laboratorium": ["F-9sesft0lw", "dp4QKCaikVY", "cYDGKOD-g54", "f70dsgpD5CE", "7PkbzK_iGPs", "6BGwqIYZ4Ns", "loocTs2UXkM", "JdLjJhasQek", "dGrHnUJouG8", "JdLjJhasQek", "evnoxjtvXrg", "T7xTcj72oxQ", "A3ZnirIbbXE", "loT9Zt9IBiM", "tS9w3araFAA", "RdL_QdZdu4o", "u2bOuuffmwY"],
+          "What a cartoon": ["qDfB7qwtegs", "OsLQgXoS994", "Dnz8IjSTtxs", "So7BtN_F9nc", "qbBehMStxqA", "_esXP0K5Sk0", "qrP7RH2IXf8"],
+          "Dexter's laboratorium": ["F-9sesft0lw", "dp4QKCaikVY", "cYDGKOD-g54", "f70dsgpD5CE", "7PkbzK_iGPs", "6BGwqIYZ4Ns", "loocTs2UXkM", "JdLjJhasQek", "dGrHnUJouG8", "JdLjJhasQek", "evnoxjtvXrg", "T7xTcj72oxQ", "A3ZnirIbbXE", "loT9Zt9IBiM", "tS9w3araFAA", "RdL_QdZdu4o", "u2bOuuffmwY"],
           "Robotboy": ["eIjb1oZMNc4", "IT0jAy4IVNg", "uilUjYuUtck", "gNYyUsD0g3c", "fP8FPqrqOW0", "_46YMGDru8", "B5PSWQkzeic", "5Jzx0pHqelE", "ISe3z9OEHFc", "dA8jEfCI9pE", "r8mIlHd8WJs", "tcpgGrS_x0o", "sBQuVP2Z_B8", "EyZuSeo8KKU", "9eqBSLrSSRY", "DGfoTwdwFjc", "TMHRXf44Ihc", "h7j7azB7oGI", "pqdlm2LJiUo", "gTlxMgSQcYU", "3KFQvcmqsxA", "rJJkWOPc3fM", "setXpQiH_Mg", "Q-RlF9aLRvE", "2WLCA5V6laE", "3dzwiJ1GQb4", "nQ_61aVj3a0", "DTv0SSHKn7Q", "JlsxQGzms3U", "zI4IhhbZ3Pk", "cATwR-IjRcw", "5Td6r02WmUQ", "L0cxbXdTBQU", "FOu7MJn_Omk", "AVaiRfiVGAw", "0gcJCYcKAYcqIYzv", "M5b8aoN4ASg", "vrnPEioga0I", "np4DPKZUtGk", "ctAXNzaNfXc", "AQGHP2ZI7pM", "CgPtwz6CaX4", "zFDG9DlPrJ0", "d0qGysvsJUQ", "xgM7xma5G9A", "Niv0fTHvDTM", "xNsB5TcK8ys", "kVxTGrNXAPs"],
           "Jackie Chan Adventures": ["oNLBxtUxOKs"],
           "Frygtløs den frygtsomme hund": ["n3ONGMAGh8k", "q1qy2AE0meE", "J59auG6dD4Y", "RZle6X4yDFQ", "A5D7CiHtzH8", "x6MlwDW0Wzw", "Y3bEzvQlD_Q", "eTrEJbu5T7M", "K2waTzIJpdY", "wlr1IqKPia0", "b1LLO3Ol02s", "ZFQJptU4UWQ", "vGVJG7u0CU", "yKwaNrprfmE", "L2Ert3vPdbs", "Y1nTBZfBUqE", "Xko2ZG3eZr0", "unanmjdHS2o"],
@@ -1655,10 +1661,10 @@
         }
       },
       {
-        name: "Disney Channel",
+        name: "RK2",
         series: {
           "Legenden om Tarzan": ["w1olCJ3g98U", "amy4PzB_MHo", "wn77F5TX7VA", "i39mbdx2d1U", "upyWvx1z75s", "-grXg0n_wVI", "fmhdSho74rM", "HdON75xe6Og", "o5xIeFSHXUE", "mHnDY5IcRJM", "PtYJgMvIBj8"],
-          "Frikvarter": ["kZgDK8eMKyI", "5Nw-20vEsJI", "fXD71RmheyA"],
+          "Frikvarter": ["https://dn721809.ca.archive.org/0/items/frikvrter/Recess.School%27s.Out.NORDiC.720p%20WEB-DL%20H%20264%20AAC2.0-BONDE.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E01.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E02.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E03.mp4", "https://ia800301.us.archive.org/18/items/frikvrter/S01E04.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E05.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E06.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E07.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E08.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E09.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E10.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E11.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E12.mp4", "https://dn721809.ca.archive.org/0/items/frikvrter/S01E13.mp4"],
           "Brandy og Hr. Wimse": ["fYOfGZy4ENM", "ZMWVLORH-FA", "ES0nKwEMOIU", "LnwXLju-XDw", "3tKHDWC1lD4", "Vo2YHTW8KrY", "tF9F6cCNH3U", "Y2AWBSVp1sI", "81SRPYBNc-4", "9MwK0W4-0cg", "ktCg7ogKUy8", "Ldi88MkRmv4", "cmHfAOSJ3Tg", "G2JCHgtViXU", "C-UQFXOUq4w", "QNTBCoJdbc4", "i_aeOtOp3U0"],
           "Barbaren Dave": ["KK6WO8h1b84", "rEKwKmf5xP8", "YwSHsT_LiVA", "XYFdkFzmEug", "sZiaT1l8JI8", "3Dbn0KqbvMY", "URAQseQvP4c", "2FrTDN33a_0", "SOMOC8OCobE", "I9dx8fo-RJU", "rsTUjOUt8BE", "wj19J-Uhyfw", "tHF9VS5TJ-U", "uIl6Q-SEYN4", "-m74C1A4TFc"],
           "Filmore!": ["NW7QHaz3kKE", "nkZAJL3BBwY", "mIyXivF_2XI", "nKLCAlmHzkI", "P3S4_fqgC98", "77cvJbnt6S4", "y3Rx-2uUDz8", "nOW0blBVTzE", "egwqd3WGTN8"],
@@ -1666,13 +1672,15 @@
         }
       },
       {
-        name: "Fox Kids",
+        name: "RK3",
         series: {
-          "Puslekrogen": ["HJnSdzPmYa0"]
+          "Puslekrogen": ["HJnSdzPmYa0"],
+          "Sonic X": ["https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E01.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E02.mp4", "https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E03.mp4", "https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E04.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E07.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E08.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E09.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E10.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E11.mp4", "https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E12.mp4", "https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E13.mp4", "https://ia601005.us.archive.org/10/items/sonic-x_202412/S01E14.mp4", "https://ia801005.us.archive.org/10/items/sonic-x_202412/S01E15.mp4"],
+          "Pokemon": ["https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E01.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4", "https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E02.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4", "https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E03.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4", "https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E04.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4", "https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E05.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4", "https://dn721601.ca.archive.org/0/items/pkemn/Pokemon.S01E06.DANiSH.576p.WEB-DL.x264-DBRETAiL.mp4"]
         }
       },
       {
-        name: "Jetix",
+        name: "RK4",
         series: {
           "Oban Star Racers": ["KG1SHsBTTA8", "8xaE3zIToWc", "U76bVRyiW0s", "FcTEVV-4-dw", "Y7kL7ltJTnI", "TP6io9gyoa0"],
           "A.T.O.M": ["6t6yO4cgWnY", "-_czQHx4Ns", "vTRaCQF_kjE", "nUeyiD4jQYs", "ig5qr4tBv4g", "PIV55gT3b28", "0Za-4iKgWKs", "R-A7kbOsyLU", "ztXk1glYC1c"],
@@ -1682,17 +1690,8 @@
         }
       },
       {
-        name: "Blandet",
+        name: "RK5",
         series: {
-          "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
-          "Hamtaro": [
-            "iframe:https://archive.org/embed/hamtaro-episode-1-danish?autoplay=1&play=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-02.-the.-ham-ham.-clubhouse.-wizz.-dk?autoplay=1&play=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-03.-calling.-all.-ham-hams.-wizz.-dk?autoplay=1&play=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-04.-come.-out.-bijou.-wizz.-dk?autoplay=1&play=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-05.-diamonds.-of.-sugar.-wizz.-dk?autoplay=1&play=1&start=0",
-            "iframe:https://archive.org/embed/s-01e-06.-first.-time.-at.-the.-beach.-wizz.-dk?autoplay=1&play=1&start=0"
-          ],
           "Richard Scarrys Travle Verden": ["cM01SH5IYYo", "JCq_hSExlnQ"],
           "Superman": ["t51Si5XEgxg", "RcJFaH9MQ0E", "4Ygh3a1oipo", "-hVs5ZhFJj8", "Ewn4e_RklpM"],
           "Kong Arthur": ["AAYUd9BEQu4", "LKNFKFq6LTs", "X736zvAOd1c"],
@@ -1700,6 +1699,7 @@
           "Duedrengen": ["GX6zTpSuHko", "6mdGulMapHw", "FIgqbpeRPls", "NohZIaUwdDg"],
           "De tre venner og Jerry": ["hr-jNsLgM-w", "dZpMoAQIP-k", "GQBRd2fN-bU", "qHDX722bZMM", "IQkm3Bkxafg", "V8tC4NvwZ5o", "WZAVzyxS-Fo", "SAS2vzZFdtk", "ZhBPNl1GRkk", "NaKLJglaVIY", "GK83Uwexmgk", "nFLBxZ8Luz4", "Y6NUPAU3xNM", "xHZeA0l08Tw", "eNbcMQzF1bE", "cm90J7i2e5Y", "BA5nabt0deQ", "kfK_nrIu3MA"],
           "Creep School": ["MSYGOjnBric", "8IMhcIE6N7k"],
+          "Mumitroldene": ["n1fNeNzRrD8", "Ex5_0MaoyGU", "tUb8RuaNpQY", "esaICecdhsQ", "S4p8cfpNgPQ", "SxdY8p9rteA", "HxNdKtu5PJQ", "HVKac1HKT-4", "S5elMq9gyK8", "w_9T3-YK_4s", "D_P0LZF0SLg", "TXZIjE4QCVg", "1uctplf1dBs", "nARFgfHNIjI", "EsuaAZJ_wpI", "mhTkKT2Fyl0", "vIIciBpW_c0", "HxTfc-Y1bso", "HfISRNQnFa4", "lJWNfU8GHa8", "efLp2gQRYao", "V_9D0L18BJo", "t7KRldU8xRQ", "G7VB758yJgw", "NXmhtkY8fCs", "aueFkB11MLQ", "I7w8in3u8Qs", "FTS6cPjS4FE", "Un34Nwkriys", "5JsTxUGebEw", "zTA8kTZxIis", "0aU7NbnJMcI", "HwM7-n9-IdE", "Zi-8YT78vB8", "lLrLVVJ9uU4", "u8tb2vTAWt4", "JSULatqgD8I", "Y2J_DjMKzPE", "NPJJfgaa6Og", "Yj-SL1JbMzg", "yNrIt3W4jtI", "Z8NLHt6vJfs", "GpH7i71m9jI", "ho2HEqs9p08", "4Dnyw1gmsIg", "8W_ovqdSyXc", "SU7Cw0nRJAk", "NkVM-1k8Xgg", "-D4K-9KTi4M", "ZmwNfzFWM9I", "gVa7YD2eDcE", "5oeRVu7gtJ0", "_Jijl_GxP7g", "c1vsNhSzg4Q", "3hPYj0C9iuw", "D7QxdmM9M7o", "6jIQ-4eoz8w", "lgDn3ZmQhL8", "Rq6X7ZRMlDw", "fWe6yJP1JCE", "LQelZWJIKZg", "kLKsFJC3pGg", "qnLyj16aCCE", "Q7hy7FLV_3o", "O3GMMxT_Vos", "10441SRPZEQ", "1CtLQZ13G0g", "yb0cnI8knxg", "0IAIbYp6G1I", "8Y0EIob4Tvw", "6Vp5gadoOsg", "LrAaCh5eesw", "fEIcJWAJkLc", "kB1XDVQqU7s", "XXkMkjLOSsM", "NfK8OyPse1g", "H9cRMGfJpV8", "Hr7D-Xxe3zc"],
           "Fragglerne": ["O573raJ20e0"],
           "Sallies historier": ["8-waX4dkEio", "a7S2RF5WAMQ", "hHO3tovfuA8", "whdGHE-fBJ0", "tBGGRMIAy3Q", "k0zM1mRUgew", "3MpgqVIctVA", "cIdXwVGWCWA", "NFLwvptfwX8", "TYwmwrL0gpc", "DK5-fnh-vs0", "v5cv05XNgYw", "qOQlxiGLeYc"],
           "Pucca": ["JfusnPJd4s4"],
@@ -1710,7 +1710,7 @@
         }
       },
       {
-        name: "Film",
+        name: "RK6",
         series: {
           "Casper møder Wendy": ["DJqOCRJX3F8"],
           "Morten på nye skoleeventyr": ["AXu04cQsztM"],
@@ -1747,8 +1747,20 @@
           "Immunforsvaret": ["fyHsHvT9H3Y"],
           "Action Man: X Missions": ["lzoF1vk-2tA"],
           "Yu-Gi-Oh! - Den Lysende Pyramide": ["OeCU88a0-vM"],
-          "Familien Flintstone: I-Yabba-Dabba-Do!": ["dm:x96o9ik"],
-          "Jetsons møder familien Flintstone": ["dm:x96o9ii"]
+          "Familien Flintstone: I-Yabba-Dabba-Do!": ["https://www.dailymotion.com/video/x96o9ik"],
+          "Jetsons møder familien Flintstone": ["https://www.dailymotion.com/video/x96o9ii"],
+          "Krammebjørnene: Rejsen til Legelyst": ["VPxW39iY2dg"]
+        }
+      },
+      {
+        name: "RK7",
+        series: {
+          "Brum": ["-OIpR8r8YjM", "HIO6JVQ5sDo"],
+          "Noddy": ["0fdvvANlP0"],
+          "Abevej 64": ["Xn1iFt2-s-k", "ZRLAYabg98Y", "eNx51p3qgpk", "ODxTOy_ldC8", "eb6zgUPGkAg", "dsM2nvZKNQs", "HMQgCYuPQZk", "gnCy4Inm_oA", "wSJOKSCj2Ew", "gmJDooben-k"],
+          "Duedrengen": ["GX6zTpSuHko", "6mdGulMapHw", "FIgqbpeRPls", "NohZIaUwdDg"],
+          "Braceface": ["3-8ybymuT7E", "F0GDN2F67D4", "C8Kruj34fQg", "y3iFvC3gF0I", "y3iFvC3gF0I", "-FfxuawrqgU", "VuOOxzdVu_c", "fZB_Q8xyIaU", "1Y_TTXTyoC4", "E8GMFKBm9PM", "V0gI5PWt9Zg", "hCx_F0gpH4g", "t1CiqE-4wYc", "6Y9aVP46L5U", "J_Ji2c0Fs0o", "vxvOSLrBWQU", "wjFgCgxATks", "4SFfjTrPbGs", "4Y9eofemkvE", "vFUFuxVmD4w", "UKcsJj5IaQw", "MAqVD9iCESU", "1I7R4MHCZDo", "Ucrb1q_eTEE", "lvT3cpj4xmM", "ogJwFxIGLPo", "kw2C8vDE-3U", "MaXGpcwgFZo", "eQeZB5oZues", "v9eqFkvqiko", "G9kGCWBEp9g", "R-JWGN1Q8ck"],
+          "Junglebogens Junglebørn": ["https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E01.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E02.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E03.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E04.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E05.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E06.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E07.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E08.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E09.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E10.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E11.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E12.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S01E13.mp4", "https://ia600206.us.archive.org/8/items/junglebogens-jungleborn/S02E01.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E02.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E03.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E04.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E05.mp4", "https://ia800206.us.archive.org/8/items/junglebogens-jungleborn/S02E06.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E07.mp4", "https://dn710203.ca.archive.org/0/items/junglebogens-jungleborn/S02E08.mp4"]
         }
       }
     ];
@@ -1766,7 +1778,12 @@
       "5HuWe5cpspw", "yL8haswz7QU", "R44TtSiwXPw", "Uuwc-hE8Mao", "LZFbtzElITA",
       "do4_ZnX5vvk", "c2qmzNqpE_k", "6Y4cd0cSJBw", "4xh9A4dSH_M", "wWETLa6G0ak",
       "AsncQZKdJCA", "gsBasNfXURA", "Z2m0AnYrCa8", "tRdsbpiqI60", "qnEQcdNOqRI",
-      "QBdvH42-PdE"
+      "QBdvH42-PdE", "mWeqXr5UiDQ", "wjHUMzd-5wM", "Z_u3vhRKOpA", "corwfKbXuGI",
+      "xMsUeFLRWqo", "spmHlVHTgYA", "4Jh2zYzbIoQ", "Z-y-Hjid9wc", "nI-IsoBOx2k",
+      "1KZ4b83gZyI", "ox4XFDMbPcs", "bbL3BjEFgJ0", "Td7rNcvMp0g", "XzLt8_x6rHQ",
+      "pMiODqMOi-0", "Gk3SeahokGc", "WNGBb7S9_eA", "AbYTkF1tVgo", "zw4Dap1oKK0",
+      "https://archive.org/details/spaced-out-premire-ad-cartoon-network-nordic-2002-dansk",
+      "JzaBnPKUaYQ", "TEdzQVBvVJM"
     ];
 
     const adsDisney = ["gHiyQM_RuVA", "QPMr2_ld2yc", "ccG1eJDDzxI", "0AU5VuxdUxA", "6Zv1s7YfFD8", "ZCBhZCmHUnE", "H29WJfiXJS0"];
@@ -2835,9 +2852,9 @@
       let adSource = adsCartoon;
       const chName = channels[current].name;
 
-      if (chName === "Disney Channel") adSource = adsDisney;
-      else if (chName === "Fox Kids") adSource = adsFox;
-      else if (chName === "Jetix") adSource = adsJetix;
+      if (chName === "RK2") adSource = adsDisney;
+      else if (chName === "RK3") adSource = adsFox;
+      else if (chName === "RK4") adSource = adsJetix;
 
       // Unique Filter: Deduplicate the source array just in case
       adSource = [...new Set(adSource)];
@@ -2892,7 +2909,7 @@
 
     function playAdsThen(cb, isTuningIn = false, resumeSeq = null, resumeStartAt = 0) {
       const loadId = currentLoadId; // Respect the load context we're in
-      if (!adsEnabled || !["Cartoon Network", "Disney Channel", "Fox Kids", "Jetix", "Blandet"].includes(channels[current].name)) {
+      if (!adsEnabled || !["RK1", "RK2", "RK3", "RK4", "RK5"].includes(channels[current].name)) {
         cb(); return;
       }
 
@@ -3233,7 +3250,7 @@
       const queue = channelStates[chKey].playlist;
       const allSeries = ch.series ? Object.keys(ch.series) : [];
 
-      // If channel has NO content (e.g. Fox Kids/Jetix), fill with ADS
+      // If channel has NO content (e.g. RK3/RK4), fill with ADS
       if (allSeries.length === 0) {
         while (queue.length < 15) {
           queue.push("REKLAMEPAUSE");
@@ -3314,8 +3331,8 @@
         // 25% chance -> Approx every 4 episodes
         // STRICT RULE: Never have more than 2 REKLAMEPAUSE in a row
         // AND: Only on ad-supported channels
-        const adChannels = ["Cartoon Network", "Disney Channel", "Fox Kids", "Jetix"];
-        if (Math.random() < 0.25 && pick !== "REKLAMEPAUSE" && adChannels.includes(ch.name)) {
+        const adChannels = ["RK1", "RK2", "RK3", "RK4"];
+        if (Math.random() < 0.50 && pick !== "REKLAMEPAUSE" && adChannels.includes(ch.name)) {
           // Count consecutive REKLAMEPAUSE at end of queue
           let consecutiveAds = 0;
           for (let j = queue.length - 1; j >= 0; j--) {
@@ -4461,6 +4478,8 @@
         target="_blank" style="color: inherit; text-decoration: underline;">Retrokyllingen.dk</a></span>
   </p>
 
-</body>
+
+
+</body><wyidbvbgs-riyxlfsi style="all: initial !important;"></wyidbvbgs-riyxlfsi>
 
 </html>
