@@ -1640,7 +1640,7 @@
                                     <div class="brightness-label">Farve</div>
                                     <input type="range" id="fsSaturationSlider" min="0" max="200" value="100"
                                         class="retro-slider"
-                                        oninput="setColor(this.value); document.getElementById('saturationSlider').value = this.value;">
+                                        oninput="setSaturation(this.value); document.getElementById('saturationSlider').value = this.value;">
                                 </div>
 
                                 <div class="setting-group">
@@ -1675,7 +1675,7 @@
                             Farve
                         </div>
                         <input type="range" id="saturationSlider" min="0" max="200" value="100" class="retro-slider"
-                            oninput="setColor(this.value)">
+                            oninput="setSaturation(this.value)">
                     </div>
                     <div class="control-row" style="justify-content: center; align-items: center; padding-top: 5px;">
                         <!-- Brightness Slider -->
@@ -1963,12 +1963,9 @@
             {
                 name: "RK9",
                 series: {
-                    "Hamtaro": ["https://archive.org/details/hamtaro-episode-1-danish", "https://archive.org/details/s-01e-02.-the.-ham-ham.-clubhouse.-wizz.-dk", "https://archive.org/details/s-01e-03.-calling.-all.-ham-hams.-wizz.-dk", "https://archive.org/details/s-01e-04.-come.-out.-bijou.-wizz.-dk", "https://archive.org/details/s-01e-05.-diamonds.-of.-sugar.-wizz.-dk", "https://archive.org/details/s-01e-06.-first.-time.-at.-the.-beach.-wizz.-dk", "https://archive.org/details/s-01e-07.-a.-summer.-festival.-adventure.-wizz.-dk", "https://archive.org/details/s-01e-08.-the.-sunflower.-field.-wizz.-dk", "https://archive.org/details/s-01e-10.-jingle.-the.-wanderer.-wizz.-dk", "https://archive.org/details/s-01e-11.-the.-wise.-elder-ham.-wizz.-dk", "https://archive.org/details/s-01e-13.-let-s.-dance.-sandy.-wizz.-dk", "https://archive.org/details/s-01e-14.-the.-search.-for.-sandy-s.-brother.-wizz.-dk", "https://archive.org/details/s-01e-15.-bijou-s.-favorite.-ribbon.-wizz.-dk", "https://archive.org/details/s-01e-16.-get.-well.-laura.-wizz.-dk", "https://archive.org/details/s-01e-17.-hamtaro.-the.-super.-sleuth.-wizz.-dk", "https://archive.org/details/s-01e-18.-the.-slipper.-chase.-wizz.-dk", "https://archive.org/details/s-01e-19.-panda-s.-ham-ham.-fun.-park.-wizz.-dk", "https://archive.org/details/s-01e-20.-the.-snoozer.-mystery.-wizz.-dk", "https://archive.org/details/s-01e-22.-pashmina-s.-present.-wizz.-dk", "https://archive.org/details/s-01e-24.-hamtaro.-please.-come.-home.-wizz.-dk", "https://archive.org/details/s-01e-25.-merry.-christmas.-wizz.-dk", "https://archive.org/details/s-01e-26.-the.-legend.-of.-the.-courageous.-hamtaro.-wizz.-dk", "https://archive.org/details/s-01e-27.-the.-snowball.-fight.-wizz.-dk", "https://archive.org/details/s-01e-28.-the.-amazing.-auntie.-vi.-wizz.-dk", "https://archive.org/details/s-01e-29.-the.-search.-for.-dad-s.-glasses.-wizz.-dk", "https://archive.org/details/s-01e-30.-brandy-s.-big.-rac.-wizz.-dk", "https://archive.org/details/s-01e-31.-boss.-is.-a.-mom.-wizz.-dk", "https://archive.org/details/s-01e-32.-valentine-s.-day.-wizz.-dk", "https://archive.org/details/s-01e-33.-let-s.-cross.-the.-rainbow.-wizz.-dk", "https://archive.org/details/s-01e-34.-watching-over-cute-penelope", "https://archive.org/details/s-01e-35.-midnight.-celebration.-wizz.-dk", "https://archive.org/details/s-01e-36.-farewell-bijou", "https://archive.org/details/s-01e-37.-oxnards-big-crush", "https://archive.org/details/s-01e-38.-the.-precious.-letter.-wizz.-dk", "https://archive.org/details/s-01e-39.-the-flying-ham-hams", "https://archive.org/details/s-01e-40.-the-blossoms-of-friendship", "https://archive.org/details/s-01e-41.-the-scary-museum.-wizz.-dk", "https://archive.org/details/s-01e-42.-welcome.-pepper.-wizz.-dk", "https://archive.org/details/s-01e-46.-the.-sports.-festival.-wizz.-dk", "https://archive.org/details/s-01e-47.-romancing.-the.-roosters.-a.-k.-a.-the.-romantic.-set-up", "https://archive.org/details/s-01e-51.-stan.-and.-sandy.-make.-u.-wizz.-dk", "https://archive.org/details/s-01e-52.-it-s.-robin-ham.-wizz.-dk"],
                     "LazyTown": ["LN8_K5buZwg", "31XYDtzYRkY", "4cp98c3ULmw", "prV1Wju1K7M", "7jsGIhZ9WjE", "8Xs-q9eKucA", "wwqYv_OjclM", "nE0pG1EN6PA", "OkA16barG_E", "MBTfO1GSVuM", "Va2SbvlRg2s", "5NHFI3_eFzw", "mWPw9aR-sx4", "ectq84Wz6yw", "1OOaYXDFJYk", "OnHiQoS5d_4", "BvMwyhsuo7A", "1xyg3DJ9Zv8", "qxNAh8pKeYQ", "WRTPMOQtnNY", "JnoHv37aPE0", "tnCwC84S-MY", "scsvr-ZzGSo", "3yL4XTi-MIs", "GwxEdT5tMJY", "7cpluvA8XFY", "pFUZ6jIl1pM", "ekFtX7mGAT8", "V5so0-icwxo", "q-_ChvYV_eU", "WzUjSQ4iFAk", "wUWVMZVcU1A", "_2wtq3Bknrk", "arecKrv9XS4", "_pRoHpsqnaM", "l1xUO0xfHAg", "-8ooncDyQSc", "KtduWc6xj84", "S3C3rLFGL4U", "0aXAQ0FDslU", "mv3YrcZJgYQ", "T36QBpU1Nfk", "n6gm8o7KnrM", "83NIQh9ANzU", "hAehR_Xj1rc", "Cg-e9ElHeCQ", "NVOudQ2rggo", "ubq8IqymcJ4", "buBUKcZ2MCE", "NlroQpKnBTA", "JL59TpnDwwo", "SeTONRnofG0", "dSkbKCXbd0M", "Rsb_PggXWS4", "i5Lxst5UAa4", "6jxiVI86y5c", "1C8lSzhRaxs", "EubelWaSXhs", "hpqMCT1Zkos", "VmmxsQ6UZXw", "6Yc3Q2daa-o", "eGqE44zuudQ", "s9TJdSgE8Tk", "K6CU25C3cZA", "Ar0QapITYeI", "30zaObDKzr0", "57WHlhAyO-E", "gMpAKA_5Qsg", "pCqlmM46Emw", "bsvJ29XKHEs", "ae9k_UBnoQs", "6oAjGEPS5xg", "wV_D0r-u_Mk", "83P9RjB7LnY", "kTdgAPnN9w8", "Ns3PoMODHrE"],
                     "Shuriken School": ["https://dn721805.ca.archive.org/0/items/shuriken-school/S01E01.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E02.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E03.mp4", "https://ia800801.us.archive.org/35/items/shuriken-school/S01E04.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E05.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E06.mp4", "https://ia800801.us.archive.org/35/items/shuriken-school/S01E07.mp4", "https://ia600801.us.archive.org/35/items/shuriken-school/S01E08.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E09.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E10.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E11.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E12.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S01E13.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E01.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E03.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E04.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E05.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E06.mp4", "https://ia600801.us.archive.org/35/items/shuriken-school/S02E07.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E08.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E09.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E10.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E11.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E12.mp4", "https://dn721805.ca.archive.org/0/items/shuriken-school/S02E13.mp4"],
-                    "Men in black": ["https://dn721904.ca.archive.org/0/items/men-in-black-den-animerede-serie_202408/Men%20in%20Black%20-%20Den%20animerede%20serie%20S01E08.mp4"],
-                    "Motormus fra Mars": ["https://archive.org/details/motormus-fra-mars-1993/S01E02.mp4", "https://archive.org/details/motormus-fra-mars-1993/S01E03.mp4", "https://archive.org/details/motormus-fra-mars-1993/S01E05.mp4", "https://archive.org/details/motormus-fra-mars-1993/S01E06.mp4"],
-                    "Creep school": ["https://archive.org/details/s-01-e-12_20240321/S01E01.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E02.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E03.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E04.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E05.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E06.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E07.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E08.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E09.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E10.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E11.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E12.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E13.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E14.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E15.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E16.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E17.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E18.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E19.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E20.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E21.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E22.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E23.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E24.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E25.mp4", "https://archive.org/details/s-01-e-12_20240321/S01E26.mp4"]
+                    "Men in black": ["https://dn721904.ca.archive.org/0/items/men-in-black-den-animerede-serie_202408/Men%20in%20Black%20-%20Den%20animerede%20serie%20S01E08.mp4"]
                 }
             }
         ];
@@ -2378,9 +2375,15 @@
             // Detect platform
             const isDailymotion = videoId.startsWith('dm:');
             const isOneDrive = videoId.includes('1drv.ms') || videoId.includes('onedrive.live.com/embed');
-            const isIframe = videoId.startsWith('iframe:') || videoId.startsWith('embed:') || videoId.includes('/embed') || isOneDrive;
+            // Archive.org handling: /details/ WITH file.mp4 = direct video, WITHOUT = iframe
+            const isArchiveDetails = videoId.includes('archive.org/details/');
+            const isArchiveWithFile = isArchiveDetails && /\/[^\/]+\.mp4/.test(videoId);
+            const isArchiveWithoutFile = isArchiveDetails && !isArchiveWithFile;
+
+            const isIframe = videoId.startsWith('iframe:') || videoId.startsWith('embed:') || videoId.includes('/embed') || isOneDrive || isArchiveWithoutFile;
             // If it's an iframe link, it's NOT a direct video file
-            const isDirectVideo = !isIframe && (videoId.startsWith('http') || videoId.startsWith('https')) && (videoId.includes('.mp4') || videoId.includes('.webm') || videoId.includes('.ogg'));
+            // IMPORTANT: archive.org/details/ links with .mp4 will be converted to /download/ and treated as direct videos
+            const isDirectVideo = !isIframe && (videoId.startsWith('http') || videoId.startsWith('https')) && (videoId.includes('.mp4') || videoId.includes('.webm') || videoId.includes('.ogg') || isArchiveWithFile);
 
             let cleanId = videoId;
             if (isDailymotion) cleanId = videoId.substring(3);
@@ -2645,6 +2648,34 @@
                     }
                 }
 
+                // Handle Archive.org /details/ links - convert to /download/ format for direct streaming
+                // Archive.org embed players DON'T autoplay - they require manual click
+                // But direct download URLs work with HTML5 video element and autoplay properly
+                if (finalSrc.includes('archive.org/details/')) {
+                    // Extract item ID and filename from URL
+                    // Example: https://archive.org/details/motormus-fra-mars-1993/S01E02.mp4
+                    // Should become: https://archive.org/download/motormus-fra-mars-1993/S01E02.mp4
+                    // Example: https://archive.org/details/hamtaro-episode-1-danish (no file)
+                    // Should remain as /embed/ for iframe player
+
+                    const detailsMatch = finalSrc.match(/archive\.org\/details\/([^\/\?]+)(\/([^\/\?]+))?/);
+                    if (detailsMatch) {
+                        const itemId = detailsMatch[1];
+                        const filename = detailsMatch[3]; // May be undefined
+                        const baseUrl = finalSrc.substring(0, finalSrc.indexOf('/details/'));
+
+                        if (filename && filename.endsWith('.mp4')) {
+                            // Has a specific file - use direct download
+                            finalSrc = baseUrl + '/download/' + itemId + '/' + filename;
+                            console.log('Converted archive.org to direct download:', finalSrc);
+                        } else {
+                            // No specific file - use embed player (will require manual click)
+                            finalSrc = baseUrl + '/embed/' + itemId;
+                            console.log('Converted archive.org to embed (no direct file):', finalSrc);
+                        }
+                    }
+                }
+
                 // Handle Archive.org mute parameter
                 // iOS MUST be muted to prevent infinite buffering
                 // ALWAYS mute archive.org on iOS, regardless of user settings
@@ -2894,9 +2925,23 @@
                     playVideo: () => { videoElement.play(); },
                     pauseVideo: () => { videoElement.pause(); },
                     loadVideoById: (opts) => {
-                        videoElement.src = opts.videoId;
+                        let src = opts.videoId;
+
+                        // Convert archive.org /details/ to /download/ for direct streaming
+                        if (src.includes('archive.org/details/')) {
+                            const detailsMatch = src.match(/archive\.org\/details\/([^\/\?]+)(\/([^\/\?]+))?/);
+                            if (detailsMatch && detailsMatch[3] && detailsMatch[3].endsWith('.mp4')) {
+                                const itemId = detailsMatch[1];
+                                const filename = detailsMatch[3];
+                                const baseUrl = src.substring(0, src.indexOf('/details/'));
+                                src = baseUrl + '/download/' + itemId + '/' + filename;
+                                console.log('Converted archive.org to direct download for video element:', src);
+                            }
+                        }
+
+                        videoElement.src = src;
                         videoElement.currentTime = opts.startSeconds || 0;
-                        videoElement.play();
+                        videoElement.play().catch(e => console.log('Video play error:', e));
                     },
                     getPlayerState: () => {
                         if (videoElement.paused) return 2; // PAUSED
@@ -3654,17 +3699,9 @@
                     // Filter to available episodes (not yet played on this channel)
                     let availableVids = sVids.filter(vid => !channelHistory.includes(vid));
 
-                    // iOS FIX: Exclude archive.org videos on iOS
-                    if (isIOS) {
-                        availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
-                    }
-
                     // If no available episodes, reset and use all
                     if (availableVids.length === 0) {
                         availableVids = sVids;
-                        if (isIOS) {
-                            availableVids = availableVids.filter(vid => !vid.includes('archive.org'));
-                        }
                     }
 
                     // Select a random episode
@@ -3770,12 +3807,7 @@
                 return playNextInQueue(channelIndex);
             }
 
-            // iOS FIX: If the pre-selected video is archive.org on iOS, skip this series
-            if (isIOS && videoId.includes('archive.org')) {
-                console.log(`Pre-selected video is archive.org on iOS, skipping ${seriesName}...`);
-                rotateQueue(channelIndex);
-                return playNextInQueue(channelIndex);
-            }
+            // Archive.org videos work fine in iframes on iOS, no need to skip them
 
             const channelHistory = getChannelHistory(channelIndex);
             const wasInHistory = channelHistory.includes(videoId);
@@ -3913,7 +3945,7 @@
             }
 
             // IFRAME RANDOM START FIX (Since we can't get duration from iframes)
-            const isIframe = videoId.startsWith('iframe:') || videoId.startsWith('embed:') || videoId.includes('/embed') || videoId.includes('1drv.ms');
+            const isIframe = videoId.startsWith('iframe:') || videoId.startsWith('embed:') || videoId.includes('/embed') || videoId.includes('1drv.ms') || videoId.includes('archive.org/details/');
             const isNewVideo = (!state || state.id !== videoId);
 
             // FORCE START FIX: If we must start from beginning (e.g. after ads), ensure seekTo is 0
@@ -4316,7 +4348,9 @@
             renderTVGuide();
 
             // Start with random video at random time like all other channels
-            loadChannel(true, false, false, false, false);
+            // iOS: Skip static to maintain user interaction context for autoplay
+            const skipStaticOnPowerOn = isIOS;
+            loadChannel(true, false, false, skipStaticOnPowerOn, false);
         }
 
         function chUp() {
@@ -4655,6 +4689,19 @@
             if (on) {
                 applyFilters();
                 updateOSD(`LYSSTYRKE: ${brightness}`, true);
+                resetHoverTimer();
+            }
+        }
+
+        function setSaturation(val) {
+            if (val != saturation) {
+                if (on) playSliderSound();
+                saturation = val;
+                saveState();
+            }
+            if (on) {
+                applyFilters();
+                updateOSD(`FARVE: ${saturation}`, true);
                 resetHoverTimer();
             }
         }
