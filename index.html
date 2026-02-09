@@ -4191,7 +4191,9 @@
                     }
 
                     if (isStuck) {
-                        if (now - lastActivity > 2500) { // Check every 2.5s
+                        // iOS: Much shorter delay to immediately catch auto-advance failures
+                        const stuckDelay = isIOS ? 500 : 2500;
+                        if (now - lastActivity > stuckDelay) {
                             console.log("iOS Triple-Trigger: Player stuck, forcing play sequence...");
 
                             const forcePlay = () => {
@@ -4379,7 +4381,8 @@
                 saveState();
                 current = (current + 1) % channels.length;
                 renderTVGuide(); // Update guide to show new channel
-                loadChannel(false, true, false);
+                // iOS: Skip static to maintain user interaction context for autoplay
+                loadChannel(false, true, false, isIOS);
             }
         }
 
@@ -4409,7 +4412,8 @@
                 saveState();
                 current = (current - 1 + channels.length) % channels.length;
                 renderTVGuide(); // Update guide to show new channel
-                loadChannel(false, true, false);
+                // iOS: Skip static to maintain user interaction context for autoplay
+                loadChannel(false, true, false, isIOS);
             }
         }
 
