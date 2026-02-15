@@ -437,6 +437,18 @@
             border-radius: 2px;
             position: relative;
             z-index: 100;
+
+            /* Logo Watermark */
+            background-image: url('logo.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 200px;
+            background-blend-mode: multiply;
+        }
+
+        /* Hide logo when TV is ON */
+        body.tv-on .tv-guide {
+            background-image: none;
         }
 
         /* Magasinryg effekt - hidden on mobile */
@@ -1656,14 +1668,7 @@
             </div>
 
             <div class="side-panel">
-                <div class="brand-plate">
-                    <!-- Udskift 'logo.png' med dit logo filnavn (f.eks. logo.svg, logo.png, logo.webp) -->
-                    <!-- Slet eller udkommenter <img> linjen hvis du vil beholde teksten -->
-                    <img src="logo.png" alt="RETROKYLLINGEN"
-                        style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                    <!-- Hvis logo ikke loader, vis tekst i stedet: -->
-                    <noscript>RETROKYLLINGEN</noscript>
-                </div>
+                <div class="brand-plate">RETROKYLLINGEN</div>
                 <div class="speaker-grille"></div>
                 <div class="controls-area">
                     <button class="power-btn" onclick="power()" aria-label="Power">POWER</button>
@@ -4310,6 +4315,7 @@
                             dmUpdateInterval = null;
                         }
                         on = false;
+                        document.body.classList.remove('tv-on'); // Remove class to show logo
                         stopPlaybackMonitor();
                         updateAdLed();
                         channelStates = {}; // Clear channel states to ensure fresh playlist on next power on
@@ -4319,6 +4325,7 @@
             } else {
                 // Power on
                 on = true;
+                document.body.classList.add('tv-on'); // Add class to hide logo
                 // CRITICAL iOS FIX: Stay muted on iOS - required for autoplay
                 // iOS will NEVER autoplay unmuted videos, no matter what
                 muted = isIOS ? true : false;
