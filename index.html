@@ -1821,6 +1821,11 @@
     <audio id="toggleSound" preload="auto"
         src="https://www.orangefreesounds.com/wp-content/uploads/2017/01/Button-click-sound.mp3"></audio>
 
+    <!-- Chicken sounds for logo easter egg - plays random sound on click -->
+    <audio id="chickenSound1" preload="auto" src="chicken.mp3"></audio>
+    <audio id="chickenSound2" preload="auto" src="chicken2.mp3"></audio>
+    <audio id="chickenSound3" preload="auto" src="chicken3.mp3"></audio>
+
     <!-- YouTube API loaded asynchronously in JS to ensure callback is ready -->
     <!-- <script src="https://www.youtube.com/iframe_api"></script> -->
     <script src="https://geo.dailymotion.com/libs/player/x7zes.js"></script>
@@ -2199,6 +2204,49 @@
 
         // Fallback render call
         window.addEventListener('load', renderTVGuide);
+
+        // Chicken sound easter egg - click on logo when TV is off
+        window.addEventListener('load', () => {
+            const tvGuide = document.getElementById('tvGuide');
+            const chickenSounds = [
+                document.getElementById('chickenSound1'),
+                document.getElementById('chickenSound2'),
+                document.getElementById('chickenSound3')
+            ];
+
+            let lastPlayedIndex = -1; // Track last played sound to avoid repeats
+
+            if (tvGuide && chickenSounds.every(s => s)) {
+                tvGuide.addEventListener('click', (e) => {
+                    // Don't play if clicking on buttons or interactive elements
+                    if (e.target.tagName === 'BUTTON' ||
+                        e.target.classList.contains('program-item') ||
+                        e.target.closest('button')) {
+                        return;
+                    }
+
+                    // Only play if TV is off and guide is not collapsed
+                    if (!on && !tvGuide.classList.contains('collapsed')) {
+                        // Stop all chicken sounds first
+                        chickenSounds.forEach(sound => {
+                            sound.pause();
+                            sound.currentTime = 0;
+                        });
+
+                        // Pick a different sound than last time
+                        let randomIndex;
+                        do {
+                            randomIndex = Math.floor(Math.random() * chickenSounds.length);
+                        } while (randomIndex === lastPlayedIndex && chickenSounds.length > 1);
+
+                        lastPlayedIndex = randomIndex;
+                        const randomSound = chickenSounds[randomIndex];
+                        randomSound.volume = 0.6;
+                        randomSound.play().catch(() => { });
+                    }
+                });
+            }
+        });
 
         /* --- GUIDE & QUEUE LOGIC --- */
 
