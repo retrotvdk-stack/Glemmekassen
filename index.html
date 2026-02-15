@@ -1729,7 +1729,6 @@
                 <div class="guide-header">
                     <h2>TV Oversigt</h2>
                     <button class="guide-toggle" onclick="toggleGuide()" aria-label="Toggle guide">◀</button>
-                    <span id="week-display" class="week-badge"></span>
                 </div>
                 <div id="guide-content"></div>
             </div>
@@ -1758,7 +1757,6 @@
     <div class="series-filter-menu" id="seriesFilterMenu">
         <div class="filter-header">
             <h2>Serie Filter</h2>
-            <p>Vælg hvilke serier du vil se på alle kanaler</p>
         </div>
 
         <div class="filter-controls">
@@ -1795,7 +1793,7 @@
                 if (on) {
                     // If a sticky OSD (like Reklamer) is already showing, don't overwrite it immediately
                     if (!label.sticky) {
-                        label.innerText = `${current + 1}. ${channels[current].name}`;
+                        label.innerText = `${channels[current].name}`;
                         label.style.opacity = 1;
                     }
                 }
@@ -3901,7 +3899,7 @@
             const loadId = ++currentLoadId; // Capture this load context
 
             if (isHovering && on) {
-                updateOSD(`${current + 1}. ${channels[current].name}`, true);
+                updateOSD(`${channels[current].name}`, true);
             }
 
             const ch = channels[current];
@@ -4409,7 +4407,7 @@
             }
 
             // Update OSD if hovering
-            if (isHovering) updateOSD(`${current + 1}. ${channels[current].name}`, true);
+            if (isHovering) updateOSD(`${channels[current].name}`, true);
 
             // Render TV Guide with populated playlists
             renderTVGuide();
@@ -4624,7 +4622,7 @@
                 staticSound.currentTime = 0;
                 isFumbling = false;
                 // Restore OSD to channel name
-                if (on) updateOSD(`${current + 1}. ${channels[current].name}`, true);
+                if (on) updateOSD(`${channels[current].name}`, true);
             }, duration);
         }
 
@@ -4688,7 +4686,7 @@
         tv.addEventListener("mouseenter", () => {
             isHovering = true;
             if (on) {
-                updateOSD(`${current + 1}. ${channels[current].name}`, true); // Sticky while hovering
+                updateOSD(`${channels[current].name}`, true); // Sticky while hovering
                 resetHoverTimer();
             } else {
                 updateOSD("TV slukket", true);
@@ -4699,7 +4697,7 @@
         tv.addEventListener("mousemove", () => {
             if (isHovering && on && label.style.opacity == 0) {
                 // If it faded out but we moved mouse, show it again
-                updateOSD(`${current + 1}. ${channels[current].name}`, true);
+                updateOSD(`${channels[current].name}`, true);
             }
             resetHoverTimer();
         });
