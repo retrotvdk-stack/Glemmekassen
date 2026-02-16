@@ -2520,8 +2520,8 @@
                 };
 
                 videoElement.onplay = () => {
-                    // NEVER unmute on iOS - it will stop playback
-                    if (!muted && volume > 0 && !isIOS) {
+                    // Unmute after playback starts if not muted
+                    if (!muted && volume > 0) {
                         setTimeout(() => {
                             videoElement.muted = false;
                             videoElement.volume = volume / 100;
@@ -2618,7 +2618,7 @@
                             autoplay: 1,
                             controls: 0,
                             'start-time': startAt,
-                            mute: isIOS ? 1 : 0, // Only mute on iOS for autoplay compliance
+                            mute: 0, // Allow unmuting for audio playback
                             'ui-theme': 'dark',
                             'aspect-ratio': 'none'
                         }
@@ -2659,8 +2659,8 @@
                             if (currentLoad !== currentLoadId) return;
                             dmInternalState = 1; // PLAYING
 
-                            // NEVER unmute on iOS - it will stop playback
-                            if (!muted && volume > 0 && !isIOS) {
+                            // Unmute after playback starts if not muted
+                            if (!muted && volume > 0) {
                                 setTimeout(() => {
                                     dmPlayer.setMuted(false);
                                     dmPlayer.setVolume(volume / 100);
@@ -4105,14 +4105,13 @@
 
                         e.target.setVolume(volume);
 
-                        // CRITICAL: Never unmute on iOS - it will stop playback
-                        // iOS requires user interaction to unmute
-                        if (!muted && volume > 0 && !isIOS) {
+                        // CRITICAL: Attempt to unmute if user settings allow
+                        if (!muted && volume > 0) {
                             setTimeout(() => {
                                 e.target.unMute();
                                 console.log('Unmuted in onReady');
                             }, 500);
-                        } else if (muted || isIOS) {
+                        } else if (muted) {
                             e.target.mute();
                         }
 
@@ -4403,8 +4402,7 @@
                 on = true;
                 document.body.classList.add('tv-on'); // Add class to hide logo
                 // Allow unmuted playback - power button is user interaction
-                // CRITICAL: iOS must stay muted for autoplay to work
-                muted = isIOS ? true : false;
+                muted = false;
                 initializeTVPlayback();
             }
         }
@@ -4514,8 +4512,7 @@
                 if (volume < 100) {
                     volume = Math.min(100, volume + 5);
                     if (volume > 0) {
-                        // CRITICAL: Never unmute on iOS - it will stop playback
-                        if (!isIOS) muted = false;
+                        muted = false;
                         muteIcon.style.opacity = 0;
                     }
                     saveState();
@@ -4525,8 +4522,7 @@
                     if (player) {
                         try {
                             if (player.setVolume) player.setVolume(volume);
-                            // CRITICAL: Never unmute on iOS - it will stop playback
-                            if (!muted && !isIOS && player.unMute) player.unMute();
+                            if (!muted && player.unMute) player.unMute();
                         } catch (e) {
                             console.log('Volume control error:', e);
                         }
@@ -4535,8 +4531,7 @@
                     // Also apply to HTML5 video elements directly
                     if (videoElement) {
                         videoElement.volume = volume / 100;
-                        // CRITICAL: Never unmute on iOS - it will stop playback
-                        if (volume > 0 && !isIOS) videoElement.muted = false;
+                        if (volume > 0) videoElement.muted = false;
                     }
                 }
             }
@@ -4548,8 +4543,7 @@
                 if (volume > 0) {
                     volume = Math.max(0, volume - 5);
                     if (volume > 0) {
-                        // CRITICAL: Never unmute on iOS - it will stop playback
-                        if (!isIOS) muted = false;
+                        muted = false;
                         muteIcon.style.opacity = 0;
                     } else {
                         muted = true;
@@ -4563,8 +4557,7 @@
                         try {
                             if (player.setVolume) player.setVolume(volume);
                             if (volume === 0 && player.mute) player.mute();
-                            // CRITICAL: Never unmute on iOS - it will stop playback
-                            else if (!muted && !isIOS && player.unMute) player.unMute();
+                            else if (!muted && player.unMute) player.unMute();
                         } catch (e) {
                             console.log('Volume control error:', e);
                         }
