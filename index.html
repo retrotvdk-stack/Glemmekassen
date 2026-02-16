@@ -4391,7 +4391,8 @@
                 on = true;
                 document.body.classList.add('tv-on'); // Add class to hide logo
                 // Allow unmuted playback - power button is user interaction
-                muted = false;
+                // CRITICAL: iOS must stay muted for autoplay to work
+                muted = isIOS ? true : false;
                 initializeTVPlayback();
             }
         }
@@ -4498,76 +4499,74 @@
         function volUp() {
             if (on) {
                 playClick();
-                volume = Math.min(100, volume + 10);
+                if (volume < 100) {
+                    volume = Math.min(100, volume + 5);
+                    if (volume > 0) {
+                        // CRITICAL: Never unmute on iOS - it will stop playback
+                        if (!isIOS) muted = false;
+                        muteIcon.style.opacity = 0;
+                    }
+                    saveState();
+                    showVolume();
 
-                // Unmute when increasing volume from 0
-                if (volume > 0) {
-                    muted = false;
+                    // Apply volume to ALL player types
+                    if (player) {
+                        try {
+                            if (player.setVolume) player.setVolume(volume);
+                            // CRITICAL: Never unmute on iOS - it will stop playback
+                            if (!muted && !isIOS && player.unMute) player.unMute();
+                        } catch (e) {
+                            console.log('Volume control error:', e);
+                        }
+                    }
+
+                    // Also apply to HTML5 video elements directly
+                    if (videoElement) {
+                        videoElement.volume = volume / 100;
+                        // CRITICAL: Never unmute on iOS - it will stop playback
+                        if (volume > 0 && !isIOS) videoElement.muted = false;
+                    }
                 }
-
-                // Apply volume to active player (prioritize wrapper, fallback to direct instances)
-                if (player && player.setVolume) {
-                    if (volume > 0) player.unMute();
-                    player.setVolume(volume);
-                } else if (ytPlayer && ytPlayer.setVolume) {
-                    if (volume > 0) ytPlayer.unMute();
-                    ytPlayer.setVolume(volume);
-                } else if (dmPlayer && dmPlayer.setVolume) {
-                    if (volume > 0) dmPlayer.setMuted(false);
-                    dmPlayer.setVolume(volume / 100);
-                } else if (videoElement) {
-                    if (volume > 0) videoElement.muted = false;
-                    videoElement.volume = volume / 100;
-                }
-
-                showVolume();
-                updateOSD(`LYDSTYRKE: ${volume}%`, false);
-                saveState();
-                renderTVGuide();
             }
         }
 
         function volDown() {
             if (on) {
                 playClick();
-                volume = Math.max(0, volume - 10);
-
-                // Mute when volume reaches 0
-                if (volume === 0) {
-                    muted = true;
-                } else {
-                    muted = false;
-                }
-
-                // Apply volume to active player (prioritize wrapper, fallback to direct instances)
-                if (player && player.setVolume) {
-                    if (volume === 0) {
-                        player.mute();
+                if (volume > 0) {
+                    volume = Math.max(0, volume - 5);
+                    if (volume > 0) {
+                        // CRITICAL: Never unmute on iOS - it will stop playback
+                        if (!isIOS) muted = false;
+                        muteIcon.style.opacity = 0;
                     } else {
-                        player.unMute();
+                        muted = true;
+                        muteIcon.style.opacity = 1;
                     }
-                    player.setVolume(volume);
-                } else if (ytPlayer && ytPlayer.setVolume) {
-                    if (volume === 0) {
-                        ytPlayer.mute();
-                    } else {
-                        ytPlayer.unMute();
-                    }
-                    ytPlayer.setVolume(volume);
-                } else if (dmPlayer && dmPlayer.setVolume) {
-                    dmPlayer.setMuted(volume === 0);
-                    dmPlayer.setVolume(volume / 100);
-                } else if (videoElement) {
-                    videoElement.muted = (volume === 0);
-                    videoElement.volume = volume / 100;
-                }
+                    saveState();
+                    showVolume();
 
-                showVolume();
-                updateOSD(`LYDSTYRKE: ${volume}%`, false);
-                saveState();
-                renderTVGuide();
+                    // Apply volume to ALL player types
+                    if (player) {
+                        try {
+                            if (player.setVolume) player.setVolume(volume);
+                            if (volume === 0 && player.mute) player.mute();
+                            // CRITICAL: Never unmute on iOS - it will stop playback
+                            else if (!muted && !isIOS && player.unMute) player.unMute();
+                        } catch (e) {
+                            console.log('Volume control error:', e);
+                        }
+                    }
+
+                    // Also apply to HTML5 video elements directly
+                    if (videoElement) {
+                        videoElement.volume = volume / 100;
+                        videoElement.muted = (volume === 0 || muted);
+                    }
+                }
             }
         }
+
 
         function muteToggle() {
             if (on) {
