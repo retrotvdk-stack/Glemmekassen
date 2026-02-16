@@ -2015,6 +2015,10 @@
         const adLengths = {};
         let adLengthsLoaded = false;
 
+        // Brightness & Color Logic - MUST be declared before loadState()
+        let brightness = 100;
+        let saturation = 100;
+
         let current = 0, on = false, volume = 50, muted = false, adsEnabled = true, player;
         let volTimer;
         let playbackState = {
@@ -2433,7 +2437,8 @@
 
         function createPlayer({ videoId, startAt = 0, loadId = currentLoadId, onReadyCb, onStateChangeCb, onEnded, onError }) {
             // Detect platform
-            const isDailymotion = videoId.startsWith('dm:');
+            // Dailymotion detection: support both dm: prefix and full URLs
+            const isDailymotion = videoId.startsWith('dm:') || videoId.includes('dailymotion.com/video/');
             const isOneDrive = videoId.includes('1drv.ms') || videoId.includes('onedrive.live.com/embed');
             // Archive.org handling: /details/ WITH file.mp4 = direct video, WITHOUT = iframe
             const isArchiveDetails = videoId.includes('archive.org/details/');
@@ -2443,10 +2448,21 @@
             const isIframe = videoId.startsWith('iframe:') || videoId.startsWith('embed:') || videoId.includes('/embed') || isOneDrive || isArchiveWithoutFile;
             // If it's an iframe link, it's NOT a direct video file
             // IMPORTANT: archive.org/details/ links with .mp4 will be converted to /download/ and treated as direct videos
-            const isDirectVideo = !isIframe && (videoId.startsWith('http') || videoId.startsWith('https')) && (videoId.includes('.mp4') || videoId.includes('.webm') || videoId.includes('.ogg') || isArchiveWithFile);
+            const isDirectVideo = !isIframe && !isDailymotion && (videoId.startsWith('http') || videoId.startsWith('https')) && (videoId.includes('.mp4') || videoId.includes('.webm') || videoId.includes('.ogg') || isArchiveWithFile);
 
             let cleanId = videoId;
-            if (isDailymotion) cleanId = videoId.substring(3);
+            // Extract Dailymotion video ID from either dm: prefix or full URL
+            if (isDailymotion) {
+                if (videoId.startsWith('dm:')) {
+                    cleanId = videoId.substring(3);
+                } else {
+                    // Extract video ID from URL like: https://www.dailymotion.com/video/x96o9ik
+                    const match = videoId.match(/dailymotion\.com\/video\/([a-zA-Z0-9]+)/);
+                    if (match && match[1]) {
+                        cleanId = match[1];
+                    }
+                }
+            }
             if (isIframe && (videoId.startsWith('iframe:') || videoId.startsWith('embed:'))) cleanId = videoId.substring(7);
 
             // Transform OneDrive share links to embed URLs
@@ -4374,9 +4390,8 @@
                 // Power on
                 on = true;
                 document.body.classList.add('tv-on'); // Add class to hide logo
-                // CRITICAL iOS FIX: Stay muted on iOS - required for autoplay
-                // iOS will NEVER autoplay unmuted videos, no matter what
-                muted = isIOS ? true : false;
+                // Allow unmuted playback - power button is user interaction
+                muted = false;
                 initializeTVPlayback();
             }
         }
@@ -4481,15 +4496,30 @@
         }
 
         function volUp() {
-            if (on && player) {
+            if (on) {
                 playClick();
                 volume = Math.min(100, volume + 10);
+
                 // Unmute when increasing volume from 0
                 if (volume > 0) {
                     muted = false;
-                    player.unMute();
                 }
-                player.setVolume(volume);
+
+                // Apply volume to active player (prioritize wrapper, fallback to direct instances)
+                if (player && player.setVolume) {
+                    if (volume > 0) player.unMute();
+                    player.setVolume(volume);
+                } else if (ytPlayer && ytPlayer.setVolume) {
+                    if (volume > 0) ytPlayer.unMute();
+                    ytPlayer.setVolume(volume);
+                } else if (dmPlayer && dmPlayer.setVolume) {
+                    if (volume > 0) dmPlayer.setMuted(false);
+                    dmPlayer.setVolume(volume / 100);
+                } else if (videoElement) {
+                    if (volume > 0) videoElement.muted = false;
+                    videoElement.volume = volume / 100;
+                }
+
                 showVolume();
                 updateOSD(`LYDSTYRKE: ${volume}%`, false);
                 saveState();
@@ -4498,18 +4528,40 @@
         }
 
         function volDown() {
-            if (on && player) {
+            if (on) {
                 playClick();
                 volume = Math.max(0, volume - 10);
+
                 // Mute when volume reaches 0
                 if (volume === 0) {
                     muted = true;
-                    player.mute();
                 } else {
                     muted = false;
-                    player.unMute();
                 }
-                player.setVolume(volume);
+
+                // Apply volume to active player (prioritize wrapper, fallback to direct instances)
+                if (player && player.setVolume) {
+                    if (volume === 0) {
+                        player.mute();
+                    } else {
+                        player.unMute();
+                    }
+                    player.setVolume(volume);
+                } else if (ytPlayer && ytPlayer.setVolume) {
+                    if (volume === 0) {
+                        ytPlayer.mute();
+                    } else {
+                        ytPlayer.unMute();
+                    }
+                    ytPlayer.setVolume(volume);
+                } else if (dmPlayer && dmPlayer.setVolume) {
+                    dmPlayer.setMuted(volume === 0);
+                    dmPlayer.setVolume(volume / 100);
+                } else if (videoElement) {
+                    videoElement.muted = (volume === 0);
+                    videoElement.volume = volume / 100;
+                }
+
                 showVolume();
                 updateOSD(`LYDSTYRKE: ${volume}%`, false);
                 saveState();
@@ -4709,9 +4761,7 @@
             label.style.opacity = 0;
         });
 
-        // Brightness & Color Logic
-        let brightness = 100;
-        let saturation = 100;
+        // Brightness & Color Logic variables moved to earlier in code (line ~2018) to avoid temporal dead zone error
         const screenEl = document.querySelector('.screen');
 
         // Slider Click Sound Engine
