@@ -2396,6 +2396,27 @@
         let videoElement = null; // Generic video element
 
         function transformOneDriveUrl(url) {
+            // Handle archive.org URLs - decode and re-encode for iOS compatibility
+            if (url.includes('archive.org')) {
+                try {
+                    // Decode the URL to get the actual characters
+                    const decoded = decodeURIComponent(url);
+                    // Re-encode it properly for iOS Safari
+                    // Split by '/' to encode each part separately
+                    const parts = decoded.split('/');
+                    const encoded = parts.map((part, index) => {
+                        // Don't encode the protocol part (https:)
+                        if (index < 3) return part;
+                        // Encode each path segment
+                        return encodeURIComponent(part);
+                    }).join('/');
+                    return encoded;
+                } catch (e) {
+                    console.log('Archive.org URL encoding error:', e);
+                    return url; // Return original if encoding fails
+                }
+            }
+
             // Basic check for OneDrive API links
             if (url.includes('api.onedrive.com')) {
                 if (!url.includes('?download=1')) {
@@ -2476,6 +2497,13 @@
                 }
             }
             if (isIframe && (videoId.startsWith('iframe:') || videoId.startsWith('embed:'))) cleanId = videoId.substring(7);
+
+            // Clean YouTube IDs: strip any URL parameters like &t=1s
+            // This fixes issues like Noddy which has video ID: -0fdvvANlP0&t=1s
+            if (!isIframe && !isDailymotion && !isDirectVideo && cleanId.includes('&')) {
+                cleanId = cleanId.split('&')[0];
+                console.log('Cleaned YouTube ID, removed parameters:', cleanId);
+            }
 
             // Transform OneDrive share links to embed URLs
             if (isOneDrive && videoId.includes('1drv.ms')) {
@@ -3316,8 +3344,23 @@
                                 }
                             }
 
+                            // CRITICAL: Explicitly play the ad for iOS
+                            if (e.target.playVideo) {
+                                try {
+                                    e.target.playVideo();
+                                } catch (err) {
+                                    console.log('Ad play error:', err);
+                                }
+                            }
+
                             e.target.setVolume(volume);
-                            if (muted || volume === 0) e.target.mute();
+                            // Unmute ads unless user has explicitly muted or volume is 0
+                            if (!muted && volume > 0) {
+                                if (e.target.unMute) e.target.unMute();
+                            } else {
+                                if (e.target.mute) e.target.mute();
+                            }
+
                             startAutoSave();
                             try {
                                 const duration = e.target.getDuration();
@@ -4927,9 +4970,12 @@
 
         function applyFilters() {
             if (filterLayer) {
-                filterLayer.style.filter = `brightness(${brightness}%) saturate(${saturation}%)`;
+                const filterValue = `brightness(${brightness}%) saturate(${saturation}%)`;
+                filterLayer.style.filter = filterValue;
+                filterLayer.style.webkitFilter = filterValue; // iOS Safari support
             }
         }
+
 
 
 
